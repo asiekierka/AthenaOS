@@ -24,29 +24,21 @@
 	.code16
 	.intel_syntax noprefix
 
-	.section .start, "ax"
-	.global _start
-_start:
-	cld
+#include "../common.inc"
 
-	// prepare ES for data/BSS
-	// stack pointer configured by BIOS
-	push 0x1000
-	pop es
-
-	// initialize data/BSS
-	push cs
-	pop ds
-	mov si, offset "__erom"
-	mov di, offset "__sdata"
-	mov cx, offset "__lwdata"
-	rep movsw
-	mov cx, offset "__lwbss"
-	xor ax, ax
-	rep stosw
-
-	// jump to main
-	call main
-
-	// exit BIOS
-	int 0x10
+/**
+ * INT 12h AH=1Ah - palette_get_color
+ * Input:
+ * - BX = palette
+ * Output:
+ * - AX = color value
+ */
+    .global palette_get_color
+palette_get_color:
+    push dx
+    mov dx, 0x0020
+    add dl, bl
+    add dl, bl
+    in ax, dx
+    pop dx
+    ret

@@ -39,7 +39,7 @@ irq_disp_handlers:
 	.word error_handle_generic // TODO: screen_get_char
 	.word error_handle_generic // TODO: screen_fill_char
 	.word error_handle_generic // TODO: screen_fill_attr
-	.word error_handle_generic // TODO: sprite_set_range
+	.word sprite_set_range
 	.word error_handle_generic // TODO: sprite_set_char
 	.word error_handle_generic // TODO: sprite_get_char
 	.word error_handle_generic // TODO: sprite_set_location
@@ -47,14 +47,14 @@ irq_disp_handlers:
 	.word error_handle_generic // TODO: sprite_set_char_location
 	.word error_handle_generic // TODO: sprite_get_char_location
 	.word error_handle_generic // TODO: sprite_set_data
-	.word error_handle_generic // TODO: screen_set_scroll
-	.word error_handle_generic // TODO: screen_get_scroll
-	.word error_handle_generic // TODO: screen2_set_window
-	.word error_handle_generic // TODO: screen2_get_window
-	.word error_handle_generic // TODO: sprite_set_window
-	.word error_handle_generic // TODO: sprite_get_window
-	.word error_handle_generic // TODO: palette_set_color
-	.word error_handle_generic // TODO: palette_get_color
+	.word screen_set_scroll
+	.word screen_get_scroll
+	.word screen2_set_window
+	.word screen2_get_window
+	.word sprite_set_window
+	.word sprite_get_window
+	.word palette_set_color
+	.word palette_get_color
 	.word lcd_set_color
 	.word lcd_get_color
 	.word lcd_set_segments

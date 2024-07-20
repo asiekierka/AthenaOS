@@ -24,29 +24,24 @@
 	.code16
 	.intel_syntax noprefix
 
-	.section .start, "ax"
-	.global _start
-_start:
-	cld
+#include "../common.inc"
 
-	// prepare ES for data/BSS
-	// stack pointer configured by BIOS
-	push 0x1000
-	pop es
-
-	// initialize data/BSS
-	push cs
-	pop ds
-	mov si, offset "__erom"
-	mov di, offset "__sdata"
-	mov cx, offset "__lwdata"
-	rep movsw
-	mov cx, offset "__lwbss"
-	xor ax, ax
-	rep stosw
-
-	// jump to main
-	call main
-
-	// exit BIOS
-	int 0x10
+/**
+ * INT 12h AH=17h - sprite_set_window
+ * Input:
+ * - BL = top-left corner X
+ * - BH = top-left corner Y
+ * - CL = width
+ * - CH = height
+ * Output:
+ */
+    .global sprite_set_window
+sprite_set_window:
+    push ax
+    mov ax, bx
+    out IO_SPR_WIN_X1, ax
+    add ax, cx
+    sub ax, 0x101
+    out IO_SPR_WIN_X2, ax
+    pop ax
+    ret

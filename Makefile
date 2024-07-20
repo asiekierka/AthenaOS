@@ -144,7 +144,7 @@ $(BUILDDIR)/fonts/font_ank_dat.o : $(ANK_FONT) tools/ank_font_pack.py
 	@mkdir -p $(@D)
 	$(PYTHON) tools/ank_font_pack.py $(ANK_FONT) $(patsubst %_dat.o,%.dat,$@)
 	@echo "  BIN2S   $(patsubst %_dat.o,%.dat,$@)"
-	$(_V)$(BIN2S) $(@D) $(patsubst %_dat.o,%.dat,$@)
+	$(_V)$(BIN2S) --section ".text" $(@D) $(patsubst %_dat.o,%.dat,$@)
 	$(_V)$(CC) $(ASFLAGS) -c -o $@ $(patsubst %.o,%.s,$@)
 
 $(BUILDDIR)/fonts/font_sjis_dat.o : $(SJIS_FONT) tools/sjis_font_pack.py
@@ -152,7 +152,7 @@ $(BUILDDIR)/fonts/font_sjis_dat.o : $(SJIS_FONT) tools/sjis_font_pack.py
 	@mkdir -p $(@D)
 	$(PYTHON) tools/sjis_font_pack.py $(SJIS_FONT) $(patsubst %_dat.o,%.dat,$@)
 	@echo "  BIN2S   $(patsubst %_dat.o,%.dat,$@)"
-	$(_V)$(BIN2S) $(@D) $(patsubst %_dat.o,%.dat,$@)
+	$(_V)$(BIN2S) --section ".text" $(@D) $(patsubst %_dat.o,%.dat,$@)
 	$(_V)$(CC) $(ASFLAGS) -c -o $@ $(patsubst %.o,%.s,$@)
 
 $(BUILDDIR)/%.s.o : %.s
