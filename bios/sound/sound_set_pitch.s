@@ -35,8 +35,8 @@
  *
  * Sets the channel's pitch.
  */
-	.global irq_sound_set_pitch
-irq_sound_set_pitch:
+	.global sound_set_pitch
+sound_set_pitch:
 	push ax
 	push dx
 

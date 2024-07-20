@@ -35,8 +35,8 @@
  *
  * Retrieves the current channel pitch.
  */
-	.global irq_sound_get_pitch
-irq_sound_get_pitch:
+	.global sound_get_pitch
+sound_get_pitch:
 	push dx
 
 	mov dx, IO_SND_FREQ_CH1

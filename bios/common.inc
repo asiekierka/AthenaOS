@@ -29,3 +29,14 @@
 #define MEM_WAVETABLE 0x200
 /// Default top of stack - the smallest top of stack of all memory modes (ASC1/ASC2/JPN1/JPN2).
 #define MEM_STACK_TOP 0xE00
+
+#define ANK_SCREEN_TILES  128
+#define SJIS_SCREEN_TILES (28 * 18)
+#define TEXT_MODE_ANK 0
+#define TEXT_MODE_ANK_SJIS 1
+#define TEXT_MODE_SJIS 2
+
+#define BIOS_VERSION_MAJOR 1
+#define BIOS_VERSION_MINOR 9
+#define BIOS_VERSION_PATCH 99
+#define BIOS_VERSION (((BIOS_VERSION_MAJOR) << 12) | ((BIOS_VERSION_MINOR) << 8) | (BIOS_VERSION_PATCH))

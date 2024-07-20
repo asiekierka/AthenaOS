@@ -27,17 +27,12 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=1Eh - lcd_get_segments
  * Input:
- * - BL = Output control
  * Output:
- *
- * Sets the "output control" hardware port.
+ * - AL = segment values
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global lcd_get_segments
+lcd_get_segments:
+    in al, IO_LCD_SEG
+    ret

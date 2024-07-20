@@ -26,18 +26,20 @@
 
 #include "../common.inc"
 
-/**
- * INT 15h AH=03h - sound_set_output
- * Input:
- * - BL = Output control
- * Output:
- *
- * Sets the "output control" hardware port.
- */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    // BL = X position
+    // BH = Y position
+    // AX = result
+    // clobbers BX, CL
+    .global __text_tilemap_at
+__text_tilemap_at:
+    ss mov cl, [text_screen]
+    add cl, cl
+    add cl, cl
+    in al, IO_SCR_BASE
+    shr al, cl
+    and al, 0xF
+    shl ax, 11  // assumption: AL = 0
+    xchg al, bl // ... used here
+    shr bx, 3
+    add ax, bx
+    ret

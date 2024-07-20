@@ -33,8 +33,8 @@
  *
  * Initializes the sound system.
  */
-	.global irq_sound_init
-irq_sound_init:
+	.global sound_init
+sound_init:
 	push ax
 	push cx
 	push es

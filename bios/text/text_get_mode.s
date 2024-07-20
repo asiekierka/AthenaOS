@@ -27,17 +27,13 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 13h AH=03h - text_get_mode
  * Input:
- * - BL = Output control
  * Output:
- *
- * Sets the "output control" hardware port.
+ * - AX = Text mode
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global text_get_mode
+text_get_mode:
+    xor ax, ax
+    ss mov al, [text_mode]
+    ret

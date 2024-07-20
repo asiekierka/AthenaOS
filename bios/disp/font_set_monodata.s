@@ -27,17 +27,74 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=02h - font_set_monodata
  * Input:
- * - BL = Output control
+ * - BX = starting tile number
+ * - CX = number of tiles
+ * - DS:DX = data to set
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global font_set_monodata
+font_set_monodata:
+    pusha
+    push es
+
+    // DS:SI = source
+    mov si, dx
+
+    // ES:DI = destination
+    push ss
+    pop es
+    mov di, bx
+    shl di, 4
+    add di, 0x2000
+
+    // CX = words
+    shl cx, 3
+
+    // BX, DX free
+    // BX = background mask
+    // DX = foreground mask
+
+    // to convert 0,1 (a) to 0,FF (A):
+    // A = (a^1)-1
+    // TODO: this might be faster, smaller, better as a table
+
+    ss mov al, [disp_font_color]
+    not al
+
+    mov dl, al
+    and dl, 1
+    dec dl
+    shr al, 1
+
+    mov dh, al
+    and dh, 1
+    dec dh
+    shr al, 1
+
+    mov bl, al
+    and bl, 1
+    dec bl
+    shr al, 1
+
+    mov bh, al
+    and bh, 1
+    dec bh
+
+    cld
+font_set_monodata_loop:
+    lodsb
+    mov ah, al
+    push dx
+    and dx, ax
+    not ax
+    and ax, bx
+    or ax, dx
+    pop dx
+    stosw
+    loop font_set_monodata_loop
+
+    pop es
+    popa
+    ret

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+ 
 	.arch	i186
 	.code16
 	.intel_syntax noprefix
@@ -27,17 +27,35 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=03h - font_set_colordata
  * Input:
- * - BL = Output control
+ * - BX = starting tile number
+ * - CX = number of tiles
+ * - DS:DX = data to set
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global font_set_colordata
+font_set_colordata:
+    pusha
+    push es
+
+    // DS:SI = source
+    mov si, dx
+
+    // ES:DI = destination
+    push ss
+    pop es
+    mov di, bx
+    shl di, 4
+    add di, 0x2000
+
+    // CX = words
+    shl cx, 3
+
+    cld
+    rep movsw
+
+    pop es
+    pop bp
+    popa
+    ret

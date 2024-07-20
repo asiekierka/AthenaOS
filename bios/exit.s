@@ -24,20 +24,9 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
-/**
- * INT 15h AH=03h - sound_set_output
- * Input:
- * - BL = Output control
- * Output:
- *
- * Sets the "output control" hardware port.
- */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+	.global irq_exit_handler
+irq_exit_handler:
+    // Exit FreyaBIOS. TODO
+    jmp 0xffff:0x0000

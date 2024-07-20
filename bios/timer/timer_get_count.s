@@ -27,17 +27,17 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 16h AH=09h - timer_get_count
  * Input:
- * - BL = Output control
+ * - AL = Timer (0 = HBlank, 1 = VBlank).
  * Output:
- *
- * Sets the "output control" hardware port.
+ * - AX = Timer counter value.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global timer_get_count
+timer_get_count:
+    shl al, 1
+    xor dh, dh
+    mov dl, al
+    add dl, 0xA8
+    in ax, dx
+    ret

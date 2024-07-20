@@ -27,17 +27,55 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 17h AH=00h - sys_interrupt_set_hook
  * Input:
- * - BL = Output control
- * Output:
- *
- * Sets the "output control" hardware port.
+ * - AL = Interrupt index.
+ * - DS:BX = Pointer to new vector (read)
+ * - DS:DX = Pointer to old vector (write)
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global sys_interrupt_set_hook
+sys_interrupt_set_hook:
+    push ax
+    push cx
+    push si
+    push di
+    push ds
+    push es
+
+    // AH:AL = 00nn
+    shl ax, 3
+    add ax, offset hw_irq_hook_table
+
+    // IRQ hook table -> old vector
+    push ss
+    push ds
+    pop es
+    pop ds
+    // if old vector = 0, skip
+    test dx, dx
+    jz 1f
+    // DS = BIOS, ES = caller
+    mov si, ax
+    mov di, dx
+    mov cx, 4
+    rep movsw
+1:
+
+    // new vector -> IRQ hook table
+    push es
+    push ds
+    pop es
+    pop ds
+    // DS = caller, ES = BIOS
+    mov si, bx
+    mov di, ax
+    mov cx, 4
+    rep movsw
+
+    pop es
+    pop ds
+    pop di
+    pop si
+    pop cx
+    pop ax
+    ret

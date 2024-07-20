@@ -35,8 +35,8 @@
  *
  * Sets the sweep configuration.
  */
-	.global irq_sound_set_sweep
-irq_sound_set_sweep:
+	.global sound_set_sweep
+sound_set_sweep:
 	push ax
 	mov al, bl
 	mov ah, cl

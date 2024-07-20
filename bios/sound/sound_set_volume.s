@@ -35,8 +35,8 @@
  *
  * Sets the channel volume.
  */
-	.global irq_sound_set_volume
-irq_sound_set_volume:
+	.global sound_set_volume
+sound_set_volume:
 	push ax
 	push dx
 

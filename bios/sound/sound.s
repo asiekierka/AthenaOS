@@ -28,21 +28,21 @@
 
 	.align 2
 irq_sound_handlers:
-	.word irq_sound_init
-	.word irq_sound_set_channel
-	.word irq_sound_get_channel
-	.word irq_sound_set_output
-	.word irq_sound_get_output
-	.word irq_sound_set_wave
-	.word irq_sound_set_pitch
-	.word irq_sound_get_pitch
-	.word irq_sound_set_volume
-	.word irq_sound_get_volume
-	.word irq_sound_set_sweep
-	.word irq_sound_get_sweep
-	.word irq_sound_set_noise
-	.word irq_sound_get_noise
-	.word irq_sound_get_random
+	.word sound_init
+	.word sound_set_channel
+	.word sound_get_channel
+	.word sound_set_output
+	.word sound_get_output
+	.word sound_set_wave
+	.word sound_set_pitch
+	.word sound_get_pitch
+	.word sound_set_volume
+	.word sound_get_volume
+	.word sound_set_sweep
+	.word sound_get_sweep
+	.word sound_set_noise
+	.word sound_get_noise
+	.word sound_get_random
 
 	.global irq_sound_handler
 irq_sound_handler:

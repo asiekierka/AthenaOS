@@ -34,7 +34,7 @@
  *
  * Retrieves the "output control" hardware port.
  */
-	.global irq_sound_get_output
-irq_sound_get_output:
+	.global sound_get_output
+sound_get_output:
 	in al, IO_SND_OUT_CTRL
 	ret

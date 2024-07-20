@@ -27,17 +27,17 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=1Bh - lcd_set_color
  * Input:
- * - BL = Output control
+ * - CX:BX = LCD shade LUT
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global lcd_set_color
+lcd_set_color:
+    push ax
+    mov cx, ax
+    out IO_LCD_SHADE_45, ax
+    mov bx, ax
+    out IO_LCD_SHADE_01, ax
+    pop ax
+    ret

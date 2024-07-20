@@ -34,7 +34,7 @@
  *
  * Retrieves the "channel control" hardware port.
  */
-	.global irq_sound_get_channel
-irq_sound_get_channel:
+	.global sound_get_channel
+sound_get_channel:
 	in al, IO_SND_CH_CTRL
 	ret

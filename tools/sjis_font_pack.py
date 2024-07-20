@@ -61,7 +61,7 @@ for iy in range(0, glyph_height):
     if cy <= 94:
         sy = ((cy + 1) >> 1) + 112
     else:
-        sy = ((cy + 1) >> 1) + 112
+        sy = ((cy + 1) >> 1) + 176
 
     for ix in range(0, glyph_width):
         cx = 0x21 + ix

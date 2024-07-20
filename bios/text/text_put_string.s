@@ -27,17 +27,17 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 13h AH=05h - text_put_string
  * Input:
- * - BL = Output control
+ * - BL = X position
+ * - BH = Y position
+ * - DS:DX = string
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global text_put_string
+text_put_string:
+    push cx
+    mov cx, 65535
+    call text_put_substring
+    pop cx
+    ret

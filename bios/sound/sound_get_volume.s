@@ -35,8 +35,8 @@
  *
  * Retrieves the current channel volume.
  */
-	.global irq_sound_get_volume
-irq_sound_get_volume:
+	.global sound_get_volume
+sound_get_volume:
 	push dx
 
 	mov dx, IO_SND_VOL_CH1

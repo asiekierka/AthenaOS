@@ -50,4 +50,43 @@ _start:
 	xor ax, ax
 	rep stosw
 
-	// TODO
+	// initialize interrupt vectors
+	mov di, ax
+	mov si, offset "irq_handlers"
+	mov cx, offset ((irq_handlers_end - irq_handlers) >> 1)
+	mov ax, cs
+1:
+	movsw // offset
+	stosw // segment
+	loop 1b
+
+	// jump to OS
+	jmp 0xE000:0x0000
+
+irq_handlers:
+	.word 0								// TODO: 0x00 (CPU - Divide exception)
+	.word 0								// TODO: 0x01 (CPU - Single step)
+	.word 0								// TODO: 0x02 (CPU - Non-maskable interrupt)
+	.word 0								// TODO: 0x03 (CPU - Break/INT 3)
+	.word 0								// TODO: 0x04 (CPU - Overflow/INTO)
+	.word 0								// TODO: 0x05 (CPU - BOUND)
+	.word _start						// 0x06 (unused)
+	.word _start 						// 0x07 (unused)
+	.word hw_irq_serial_tx_handler		// 0x08 (HW - serial TX)
+	.word hw_irq_key_handler			// 0x09 (HW - key)
+	.word hw_irq_cartridge_handler		// 0x0A (HW - cartridge)
+	.word hw_irq_serial_rx_handler		// 0x0B (HW - serial RX)
+	.word hw_irq_line_handler			// 0x0C (HW - line)
+	.word hw_irq_vblank_timer_handler	// 0x0D (HW - VBlank timer)
+	.word hw_irq_vblank_handler			// 0x0E (HW - VBlank)
+	.word hw_irq_hblank_timer_handler	// 0x0F (HW - HBlank timer)
+	.word irq_exit_handler				// 0x10 (BIOS - Exit)
+	.word 0								// TODO: 0x11 (BIOS - Key)
+	.word irq_disp_handler				// 0x12 (BIOS - Display)
+	.word irq_text_handler				// 0x13 (BIOS - Text)
+	.word 0								// TODO: 0x14 (BIOS - Comm)
+	.word irq_sound_handler				// 0x15 (BIOS - Sound)
+	.word 0								// TODO: 0x16 (BIOS - Timer)
+	.word 0								// TODO: 0x17 (BIOS - System)
+	.word 0								// TODO: 0x18 (BIOS - Bank)
+irq_handlers_end:

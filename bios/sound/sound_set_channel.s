@@ -34,8 +34,8 @@
  *
  * Sets the "channel control" hardware port.
  */
-	.global irq_sound_set_channel
-irq_sound_set_channel:
+	.global sound_set_channel
+sound_set_channel:
 	push ax
 	mov al, bl
 	out IO_SND_CH_CTRL, al

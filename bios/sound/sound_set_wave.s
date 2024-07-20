@@ -35,8 +35,8 @@
  *
  * Sets the channel's waveform data.
  */
-	.global irq_sound_set_wave
-irq_sound_set_wave:
+	.global sound_set_wave
+sound_set_wave:
 	push ax
 	push cx
 	push es

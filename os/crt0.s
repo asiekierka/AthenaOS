@@ -44,3 +44,9 @@ _start:
 	mov cx, offset "__lwbss"
 	xor ax, ax
 	rep stosw
+
+	// jump to main
+	jmp main
+
+	// exit BIOS
+	int 0x10

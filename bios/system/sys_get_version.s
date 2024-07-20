@@ -27,17 +27,9 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
- * Input:
- * - BL = Output control
- * Output:
- *
- * Sets the "output control" hardware port.
+ * INT 17h AH=12h - sys_get_version
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global sys_get_version
+sys_get_version:
+    mov ax, BIOS_VERSION
+    ret

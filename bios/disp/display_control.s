@@ -27,17 +27,15 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=00h - display_control
  * Input:
- * - BL = Output control
+ * - BX = Display control
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global display_control
+display_control:
+    push ax
+    mov ax, bx
+    out IO_DISPLAY_CTRL, ax
+    pop ax
+    ret

@@ -35,7 +35,7 @@
  * Retrieves the current noise LFSR value.
  * Can be used as a rudimentary pseudo-random number generator.
  */
-	.global irq_sound_get_random
-irq_sound_get_random:
+	.global sound_get_random
+sound_get_random:
 	in ax, IO_SND_RANDOM
 	ret

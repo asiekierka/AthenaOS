@@ -27,17 +27,40 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 13h AH=05h - text_put_substring
  * Input:
- * - BL = Output control
+ * - BL = X position
+ * - BH = Y position
+ * - DS:DX = string
+ * - CX = limit
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global text_put_substring
+text_put_substring:
+    push si
+    push bx
+    push cx
+    push ax
+    mov si, dx
+1:
+    // Load one character, two characters if >= 0x80 (for Shift-JIS)
+    lodsb
+    test al, al
+    jz 3f // == 0?
+    cmp al, 0x80
+    jb 2f // < 0x80?
+    mov ah, al
+    lodsb
+2:
+    push cx
+    mov cx, ax
+    call text_put_char
+    pop cx
+    inc bl
+    loop 1b
+3:
+    pop ax
+    pop cx
+    pop bx
+    pop si
+    ret

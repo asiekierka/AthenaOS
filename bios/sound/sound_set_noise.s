@@ -34,8 +34,8 @@
  *
  * Sets the "channel 4 noise control" hardware port.
  */
-	.global irq_sound_set_noise
-irq_sound_set_noise:
+	.global sound_set_noise
+sound_set_noise:
 	push ax
 	mov al, bl
 	out IO_SND_NOISE_CTRL, al

@@ -27,17 +27,20 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 12h AH=1Fh - lcd_set_sleep
  * Input:
- * - BL = Output control
+ * - BL bit 0 = LCD panel disabled?
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global lcd_set_sleep
+lcd_set_sleep:
+    pusha
+
+    in al, IO_LCD_SEG
+    and al, 0xFE
+    and bl, 0x01
+    or al, bl
+    out IO_LCD_SEG, al
+
+    popa
+    ret

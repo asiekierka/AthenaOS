@@ -27,17 +27,12 @@
 #include "../common.inc"
 
 /**
- * INT 15h AH=03h - sound_set_output
+ * INT 13h AH=09h - text_set_palette
  * Input:
- * - BL = Output control
+ * - BX = Palette number (0 - 15)
  * Output:
- *
- * Sets the "output control" hardware port.
  */
-	.global sound_set_output
-sound_set_output:
-	push ax
-	mov al, bl
-	out IO_SND_OUT_CTRL, al
-	pop ax
-	ret
+    .global text_set_palette
+text_set_palette:
+    ss mov [text_palette], bl
+    ret

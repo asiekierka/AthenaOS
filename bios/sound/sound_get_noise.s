@@ -34,7 +34,7 @@
  *
  * Retrieves the "channel 4 noise control" hardware port.
  */
-	.global irq_sound_get_noise
-irq_sound_get_noise:
+	.global sound_get_noise
+sound_get_noise:
 	in al, IO_SND_NOISE_CTRL
 	ret
