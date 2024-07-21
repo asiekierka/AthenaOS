@@ -42,7 +42,7 @@ _start:
 	// initialize data/BSS
 	push cs
 	pop ds
-	mov si, offset "__erom"
+	mov si, offset "__etext"
 	mov di, offset "__sdata"
 	mov cx, offset "__lwdata"
 	rep movsw

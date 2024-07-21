@@ -56,7 +56,7 @@ text_put_char_sjis:
     cmp byte ptr [text_mode], TEXT_MODE_ANK_SJIS
     je text_put_char_ank_sjis
 
-    // Shift-JIS only
+    // Shift-JIS only - map ASCII characters to SJIS font
     cmp cx, 0x80
     jae text_put_char_ank_sjis
     cmp cx, 0x20
@@ -65,7 +65,7 @@ text_put_char_sjis:
     // CX = text_ank_sjis_table[CX - 0x20]
     xchg bx, cx
     add bx, bx
-    mov bx, [bx + text_ank_sjis_table - 0x40]
+    cs mov bx, [bx + text_ank_sjis_table - 0x40]
     xchg bx, cx
 
 text_put_char_ank_sjis:

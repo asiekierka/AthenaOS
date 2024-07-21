@@ -42,17 +42,8 @@ SECTIONS
 		. = ALIGN (16);
 	}
 
-	.erom . (NOLOAD) :
-	{
-		. = ALIGN (16);
-		"__erom" = .;
-		"__erom!" = .;
-		"__erom&" = .;
-		. = .;
-	}
-
 	/* segelf segment start markers for target data section. */
-	".data!" 0x00000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
+	".data!" 0x00000 (NOLOAD) : AT(ADDR(".text") + SIZEOF(".text"))
 	{
 		"__sdata!" = .;
 		*(".rodata!*" ".rodata.*!")
@@ -65,7 +56,7 @@ SECTIONS
 	. = __reserved_irq_vectors * 4;
 
 	/* Target data section. */
-	.data . : AT(ADDR(".erom") + SIZEOF(".erom"))
+	.data . : AT(ADDR(".text") + SIZEOF(".text"))
 	{
 		__sdata = .;
 		*(.rodata ".rodata.*[^&]")
