@@ -40,7 +40,11 @@
  */
     .global screen_get_char
 screen_get_char:
-    pusha
+    push bx
+    push cx
+    push dx
+    push si
+    push di
     push ds
     push es
 
@@ -82,5 +86,9 @@ screen_get_char:
 3:
     pop es
     pop ds
-    popa
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
     ret
