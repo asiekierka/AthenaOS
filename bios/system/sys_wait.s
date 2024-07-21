@@ -35,9 +35,10 @@
 sys_wait:
     push cx
     ss add cx, [tick_count]
+    sti
 1:
     ss cmp cx, [tick_count]
-    jge 2f
+    jle 2f
     hlt
     nop
     jmp 1b

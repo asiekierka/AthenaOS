@@ -35,4 +35,4 @@
     .global key_hit_check
 key_hit_check:
     ss mov ax, [keys_pressed]
-    ret
+    jmp __key_clear_pressed

@@ -34,11 +34,10 @@
  */
     .global key_wait
 key_wait:
+    sti
     ss mov ax, [keys_pressed]
     test ax, ax
-    jnz 1f
+    jnz __key_clear_pressed
     hlt
     nop
     jmp key_wait
-1:
-    ret

@@ -35,4 +35,8 @@
     .global key_press_check
 key_press_check:
     ss mov ax, [keys_held]
+    .global __key_clear_pressed
+__key_clear_pressed:
+    ss mov word ptr [keys_pressed], 0
+    ss mov word ptr [keys_pressed_repeat], 0
     ret

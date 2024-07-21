@@ -35,4 +35,4 @@
     .global key_hit_check_with_repeat
 key_hit_check_with_repeat:
     ss mov ax, [keys_pressed_repeat]
-    ret
+    jmp __key_clear_pressed
