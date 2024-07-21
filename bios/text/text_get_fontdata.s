@@ -38,7 +38,7 @@ text_get_fontdata:
     push ds
     push es
 
-    mov bl, [text_mode]
+    ss mov bl, [text_mode]
 
     // CX => AX
     // DS:DX => ES:DI

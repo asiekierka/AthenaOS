@@ -48,7 +48,7 @@ __text_window_clear_ank:
     
     // SI = increment value
 __text_window_clear_loop:
-    // DI = value to set on screen
+    // DI (temporary) = value to set on screen
     mov di, [text_base]
     mov al, [text_palette]
     shl ax, 9
@@ -63,6 +63,7 @@ __text_window_clear_loop:
     xor dx, dx
     mov dl, [text_wh]
 2:
+    push di
     // CX = width counter
     xor cx, cx
     mov cl, [text_ww]
@@ -70,6 +71,8 @@ __text_window_clear_loop:
     stosw
     add ax, si
     loop 1b
+    pop di
+    add di, 64
     dec dx
     jnz 2b
 

@@ -69,6 +69,6 @@ irq_disp_handler:
 	m_irq_table_handler irq_disp_handlers, 34
 	iret
 
-    .section ".bss"
+    .section ".data"
     .global disp_font_color
-disp_font_color: .byte 0
+disp_font_color: .byte 3

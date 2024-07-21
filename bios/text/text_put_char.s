@@ -44,9 +44,9 @@ text_put_char:
     pop ds
     pop es
 
-    cmp [text_ww], bl
+    cmp bl, [text_ww]
     jae text_put_char_end
-    cmp [text_wh], bh
+    cmp bh, [text_wh]
     jae text_put_char_end
 
     cmp byte ptr [text_mode], TEXT_MODE_ANK
@@ -55,6 +55,8 @@ text_put_char:
 text_put_char_sjis:
     cmp byte ptr [text_mode], TEXT_MODE_ANK_SJIS
     je text_put_char_ank_sjis
+
+    // Shift-JIS only
     cmp cx, 0x80
     jae text_put_char_ank_sjis
     cmp cx, 0x20
@@ -68,14 +70,15 @@ text_put_char_sjis:
 
 text_put_char_ank_sjis:
     sub sp, 8
-    mov dx, sp // DX = destination
+    mov dx, sp             // DS:DX = destination
     call text_get_fontdata
 
     mov al, bh
     xor bh, bh
     mul byte ptr [text_ww]
-    add bx, AX
-    add bx, [text_base] // BX = text_base = y * text_ww + x
+    add bx, ax
+    add bx, [text_base]    // BX = text_base = y * text_ww + x
+    mov cx, 1              // CX = 1
     call font_set_monodata
 
     add sp, 8

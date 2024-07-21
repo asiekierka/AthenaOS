@@ -76,15 +76,15 @@ text_window_init:
     je __text_window_init_ank
 
 __text_window_init_sjis:
-    // memset(0x2000 + (test_base << 4), 0, window_width * window_height * sizeof(ws_tile_t));
+    // memset(0x2000 + (text_base << 4), 0, window_width * window_height * sizeof(ws_tile_t));
     mov di, [text_base]
     shl di, 4
-    add di, 0x2000
+    add di, 0x2000    // DI = 0x2000 + (text_base << 4)
     mov ax, [text_ww]
     mov cl, ah
     mul cl
-    shl ax, 2
-    mov cx, ax
+    shl ax, 3
+    mov cx, ax        // CX = ((text_ww * text_wh) * 16) / 2
     xor ax, ax
     cld
     rep stosw
