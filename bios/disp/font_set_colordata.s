@@ -56,6 +56,5 @@ font_set_colordata:
     rep movsw
 
     pop es
-    pop bp
     popa
     ret

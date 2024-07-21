@@ -60,6 +60,13 @@ _start:
 	stosw // segment
 	loop 1b
 
+	// initialize interrupts
+	mov al, 0x08
+	out IO_HWINT_VECTOR, al
+	mov al, HWINT_VBLANK
+	out IO_HWINT_ENABLE, al
+	sti
+
 	// jump to OS
 	jmp 0xE000:0x0000
 

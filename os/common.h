@@ -20,16 +20,8 @@
  * SOFTWARE.
  */
 
-	.arch	i186
-	.code16
-	.intel_syntax noprefix
-
-#include "common.inc"
-
-	.global error_handle_generic
-error_handle_generic:
-    sti
-    xor ax, ax
-    out IO_HWINT_ENABLE, al
-    hlt
-1:  jmp 1b
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <wonderful.h>
+#include <ws.h>

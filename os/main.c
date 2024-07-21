@@ -20,16 +20,18 @@
  * SOFTWARE.
  */
 
-	.arch	i186
-	.code16
-	.intel_syntax noprefix
+#include "common.h"
 
-#include "common.inc"
+#define PROGRAM_SEGMENT 0x8008 /* 128 bytes after 0x80000 */
 
-	.global error_handle_generic
-error_handle_generic:
-    sti
-    xor ax, ax
-    out IO_HWINT_ENABLE, al
-    hlt
-1:  jmp 1b
+typedef uint16_t __far (*func_start_t)(void);
+typedef void __far (*func_main_t)(void);
+
+int main(void) {
+    func_start_t start_func = MK_FP(PROGRAM_SEGMENT, 0);
+    uint16_t main_func_ofs = start_func();
+    func_main_t main_func = MK_FP(PROGRAM_SEGMENT, main_func_ofs);
+    main_func();
+
+    return 0;
+}

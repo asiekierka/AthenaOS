@@ -45,6 +45,10 @@ _start:
 	xor ax, ax
 	rep stosw
 
+	// initialize DS
+	push es
+	pop ds
+
 	// jump to main
 	call main
 
