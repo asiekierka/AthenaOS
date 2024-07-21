@@ -38,12 +38,12 @@ screen_set_vram:
     pusha
 
     mov cl, al
-    shl cl, 4  // CL = 0 (SCREEN1), 4 (SCREEN2)
+    shl cl, 2  // CL = 0 (SCREEN1), 4 (SCREEN2)
     mov al, 0xF0
     rol al, cl // AL = 0xF0 (SCREEN1), 0x0F (SCREEN2)
     and bl, 0xF
     shl bl, cl // BL = address (shifted)
-    mov cl, al // CL = mask
+    mov cl, al // CL = inverted mask
 
     in al, IO_SCR_BASE
     and al, cl

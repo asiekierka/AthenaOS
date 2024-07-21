@@ -66,7 +66,7 @@ irq_disp_handlers:
 
 	.global irq_disp_handler
 irq_disp_handler:
-	m_irq_table_handler irq_disp_handlers, 34
+	m_irq_table_handler irq_disp_handlers, 35
 	iret
 
     .section ".data"
