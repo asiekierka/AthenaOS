@@ -89,14 +89,13 @@ text_put_char_ank:
     jb 1f
     mov cx, '?'
 1:
-    push cx
-    call __text_tilemap_at
-    pop cx
-    mov bx, ax
+    mov al, [text_screen]
+    call __display_screen_at
     mov al, [text_palette]
     shl ax, 9
     add cx, ax
-    mov [bx], cx // [BX] = CX | (text_palette << 9)
+    add cx, [text_base]
+    mov [di], cx // [DI] = CX | (text_palette << 9)
 
 text_put_char_end:
     pop es

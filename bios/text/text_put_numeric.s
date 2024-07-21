@@ -52,16 +52,10 @@ text_num_put_char_or_memory:
 
 1:
     // write to display
-    push ax
     push cx
-    push dx
     mov cx, ax
-    mov al, bl
-    mov dl, bh
     call text_put_char
-    pop dx
     pop cx
-    pop ax
     inc bl
 
 .return:
@@ -189,9 +183,9 @@ text_put_numeric:
     mov cx, dx
     add ax, dx
     push ax
-.write_number_loop:
     xor ax, ax
-    mov al, [bp]
+.write_number_loop:
+    mov al, [bp]      // AH is already clear
     call text_num_put_char_or_memory
     inc bp
     loop .write_number_loop

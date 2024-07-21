@@ -44,6 +44,7 @@ text_put_substring:
     mov si, dx
 1:
     // Load one character, two characters if >= 0x80 (for Shift-JIS)
+    xor ax, ax
     lodsb
     test al, al
     jz 3f // == 0?

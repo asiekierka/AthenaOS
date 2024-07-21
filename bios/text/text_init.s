@@ -63,9 +63,7 @@ text_window_init:
     push ds
     push es
     push ss
-    push ss
     pop ds
-    pop es
 
     mov [text_wx], bx
     mov [text_ww], cx
@@ -86,15 +84,21 @@ __text_window_init_sjis:
     shl ax, 3
     mov cx, ax        // CX = ((text_ww * text_wh) * 16) / 2
     xor ax, ax
+
+    push ss
+    pop es
+
     cld
     rep stosw
     jmp __text_window_init_end
 
 __text_window_init_ank:
     // font_set_monodata(text_base, 128, font_ank);
-    mov bx, [text_base]
+    mov bx, dx // assumption: DX unchanged
     mov cx, 128
     mov dx, offset font_ank
+    push cs
+    pop ds
     call font_set_monodata
 
 __text_window_init_end:

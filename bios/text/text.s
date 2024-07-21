@@ -53,7 +53,7 @@ irq_text_handlers:
 
 	.global irq_text_handler
 irq_text_handler:
-	m_irq_table_handler irq_text_handlers, 22
+	m_irq_table_handler irq_text_handlers, 16
 	iret
 
     .section ".bss"
