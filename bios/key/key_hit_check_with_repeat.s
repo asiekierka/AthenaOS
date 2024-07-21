@@ -26,16 +26,13 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_key_handlers:
-	.word key_press_check
-	.word key_hit_check
-	.word key_wait
-	.word key_set_repeat
-	.word key_get_repeat
-	.word key_hit_check_with_repeat
-
-	.global irq_key_handler
-irq_key_handler:
-	m_irq_table_handler irq_key_handlers, 6
-	iret
+/**
+ * INT 11h AH=05h - key_hit_check_with_repeat
+ * Input:
+ * Output:
+ * - AX = pressed keys
+ */
+    .global key_hit_check_with_repeat
+key_hit_check_with_repeat:
+    ss mov ax, [keys_pressed_repeat]
+    ret

@@ -26,16 +26,14 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_key_handlers:
-	.word key_press_check
-	.word key_hit_check
-	.word key_wait
-	.word key_set_repeat
-	.word key_get_repeat
-	.word key_hit_check_with_repeat
-
-	.global irq_key_handler
-irq_key_handler:
-	m_irq_table_handler irq_key_handlers, 6
-	iret
+/**
+ * INT 11h AH=03h - key_set_repeat
+ * Input:
+ * - BL = repeat rate, in frames
+ * - BH = repeat initial delay, in frames
+ * Output:
+ */
+    .global key_set_repeat
+key_set_repeat:
+    ss mov [key_repeat_rate], bx
+    ret

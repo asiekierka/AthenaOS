@@ -138,8 +138,34 @@ hw_irq_vblank_handler:
     mov ax, word ptr [keys_held]
     not ax
     and ax, cx
-    mov word ptr [keys_held], cx
+    // AX = keys pressed
+    // CX = keys held
     mov word ptr [keys_pressed], ax
+    mov word ptr [keys_held], cx
+    // Process repeat:
+    // - If new key pressed, reset timer to delay
+    // - Otherwise:
+    //   - Decrease timer by 1
+    //   - If timer == 0, reset timer to rate and set pressed keys to held keys
+    test ax, ax
+    jz 1f
+
+    // New key pressed
+    mov bl, byte ptr [key_repeat_delay]
+    mov byte ptr [key_repeat_timer], bl
+    jmp 2f
+1:
+    // No new key pressed
+    dec byte ptr [key_repeat_timer]
+    // Timer still ticking?
+    jnz 2f
+    // Reset timer
+    mov bl, byte ptr [key_repeat_rate]
+    mov byte ptr [key_repeat_timer], bl
+    // Set pressed keys to held keys
+    mov ax, cx
+2:
+    mov word ptr [keys_pressed_repeat], ax
 
     // Call user IRQ routine
     mov al, HWINT_VBLANK
@@ -151,6 +177,12 @@ hw_irq_vblank_handler:
     pop bx
     pop ax
     iret
+
+    .section ".data"
+    .global key_repeat_rate
+key_repeat_rate:  .byte 5  // ~65ms
+    .global key_repeat_delay
+key_repeat_delay: .byte 15 // ~200ms
 
     .section ".bss"
     .global hw_irq_hook_table
@@ -164,3 +196,7 @@ tick_count: .word 0, 0
 keys_held: .word 0
     .global keys_pressed
 keys_pressed: .word 0
+    .global keys_pressed_repeat
+keys_pressed_repeat: .word 0
+    .global key_repeat_timer
+key_repeat_timer:  .byte 0
