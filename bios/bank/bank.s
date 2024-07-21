@@ -24,12 +24,22 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "common.inc"
+#include "../common.inc"
 
-	.global error_handle_generic
-error_handle_generic:
-    cli
-    xor ax, ax
-    out IO_HWINT_ENABLE, al
-    hlt
-1:  jmp 1b
+	.align 2
+irq_bank_handlers:
+	.word bank_set_map
+	.word bank_get_map
+	.word error_handle_generic // TODO: bank_read_byte
+	.word error_handle_generic // TODO: bank_write_byte
+	.word error_handle_generic // TODO: bank_read_word
+	.word error_handle_generic // TODO: bank_write_word
+	.word error_handle_generic // TODO: bank_read_block
+	.word error_handle_generic // TODO: bank_write_block
+	.word error_handle_generic // TODO: bank_fill_block
+	.word error_handle_generic // TODO: bank_erase_flash
+
+	.global irq_bank_handler
+irq_bank_handler:
+	m_irq_table_handler irq_bank_handlers, 10, M_IRQ_PUSH_DX
+	iret

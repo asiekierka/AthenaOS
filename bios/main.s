@@ -93,7 +93,7 @@ irq_handlers:
 	.word irq_text_handler				// 0x13 (BIOS - Text)
 	.word error_handle_generic			// TODO: 0x14 (BIOS - Comm)
 	.word irq_sound_handler				// 0x15 (BIOS - Sound)
-	.word error_handle_generic			// TODO: 0x16 (BIOS - Timer)
+	.word irq_timer_handler 			// 0x16 (BIOS - Timer)
 	.word irq_system_handler			// 0x17 (BIOS - System)
-	.word error_handle_generic			// TODO: 0x18 (BIOS - Bank)
+	.word irq_bank_handler  			// 0x18 (BIOS - Bank)
 irq_handlers_end:

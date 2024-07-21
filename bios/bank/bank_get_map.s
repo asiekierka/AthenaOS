@@ -24,12 +24,23 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "common.inc"
+#include "../common.inc"
 
-	.global error_handle_generic
-error_handle_generic:
-    cli
+/**
+ * INT 18h AH=01h - bank_get_map
+ * Input:
+ * - BX = Bank
+ * Output:
+ * - AX = Bank number.
+ */
+    .global bank_get_map
+bank_get_map:
     xor ax, ax
-    out IO_HWINT_ENABLE, al
-    hlt
-1:  jmp 1b
+    mov dx, bx
+    xor dh, dh
+    add dx, 0x00C1
+    cmp dx, 0x00C3
+    ja 1f
+    in al, dx
+1:
+    ret

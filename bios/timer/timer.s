@@ -24,12 +24,22 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "common.inc"
+#include "../common.inc"
 
-	.global error_handle_generic
-error_handle_generic:
-    cli
-    xor ax, ax
-    out IO_HWINT_ENABLE, al
-    hlt
-1:  jmp 1b
+	.align 2
+irq_timer_handlers:
+	.word error_handle_generic // TODO: rtc_reset
+	.word error_handle_generic // TODO: rtc_set_datetime
+	.word error_handle_generic // TODO: rtc_get_datetime
+	.word error_handle_generic // TODO: rtc_set_datetime_struct
+	.word error_handle_generic // TODO: rtc_get_datetime_struct
+	.word error_handle_generic // TODO: rtc_enable_alarm
+	.word error_handle_generic // TODO: rtc_disable_alarm
+	.word timer_enable
+	.word timer_disable
+	.word timer_get_count
+
+	.global irq_timer_handler
+irq_timer_handler:
+	m_irq_table_handler irq_timer_handlers, 10
+	iret
