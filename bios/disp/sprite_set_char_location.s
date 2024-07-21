@@ -27,17 +27,25 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=10h - sprite_set_char_location
  * Input:
- * - CX:BX = LCD shade LUT
+ * - BX = sprite ID
+ * - CX = sprite attribute
+ * - DL = X position
+ * - DH = Y position
  * Output:
  */
-    .global lcd_set_color
-lcd_set_color:
+    .global sprite_set_char_location
+sprite_set_char_location:
     push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
+    push di
+
+    call __display_sprite_at
+    xchg dh, dl
+    ss mov [di], cx
+    ss mov [di + 2], dx
+    xchg dh, dl
+    
+    pop di
     pop ax
     ret

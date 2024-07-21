@@ -35,18 +35,18 @@ irq_disp_handlers:
 	.word font_get_data
 	.word font_set_color
 	.word font_get_color
-	.word error_handle_generic // TODO: screen_set_char
-	.word error_handle_generic // TODO: screen_get_char
-	.word error_handle_generic // TODO: screen_fill_char
-	.word error_handle_generic // TODO: screen_fill_attr
+	.word screen_set_char
+	.word screen_get_char
+	.word screen_fill_char
+	.word screen_fill_attr
 	.word sprite_set_range
-	.word error_handle_generic // TODO: sprite_set_char
-	.word error_handle_generic // TODO: sprite_get_char
-	.word error_handle_generic // TODO: sprite_set_location
-	.word error_handle_generic // TODO: sprite_get_location
-	.word error_handle_generic // TODO: sprite_set_char_location
-	.word error_handle_generic // TODO: sprite_get_char_location
-	.word error_handle_generic // TODO: sprite_set_data
+	.word sprite_set_char
+	.word sprite_get_char
+	.word sprite_set_location
+	.word sprite_get_location
+	.word sprite_set_char_location
+	.word sprite_get_char_location
+	.word sprite_set_data
 	.word screen_set_scroll
 	.word screen_get_scroll
 	.word screen2_set_window
@@ -61,8 +61,8 @@ irq_disp_handlers:
 	.word lcd_get_segments
 	.word lcd_set_sleep
 	.word lcd_get_sleep
-	.word error_handle_generic // TODO: screen_set_vram
-	.word error_handle_generic // TODO: sprite_set_vram
+	.word screen_set_vram
+	.word sprite_set_vram
 
 	.global irq_disp_handler
 irq_disp_handler:

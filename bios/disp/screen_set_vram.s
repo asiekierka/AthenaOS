@@ -27,17 +27,28 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=21h - screen_set_vram
  * Input:
- * - CX:BX = LCD shade LUT
+ * - AL = screen ID (0, 1)
+ * - BL = VRAM location >> 11
  * Output:
  */
-    .global lcd_set_color
-lcd_set_color:
-    push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
-    pop ax
+    .global screen_set_vram
+screen_set_vram:
+    pusha
+
+    mov cl, al
+    shl cl, 4  // CL = 0 (SCREEN1), 4 (SCREEN2)
+    mov al, 0xF0
+    rol al, cl // AL = 0xF0 (SCREEN1), 0x0F (SCREEN2)
+    and bl, 0xF
+    shl bl, cl // BL = address (shifted)
+    mov cl, al // CL = mask
+
+    in al, IO_SCR_BASE
+    and al, cl
+    or al, bl
+    out IO_SCR_BASE, al
+
+    popa
     ret

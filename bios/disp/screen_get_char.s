@@ -27,17 +27,60 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=08h - screen_get_char
  * Input:
- * - CX:BX = LCD shade LUT
+ * - AL = screen ID
+ * - BL = X position
+ * - BH = Y position
+ * - CL = width
+ * - CH = height
+ * - DS:DX = character buffer
  * Output:
+ * - AX = If width or height == 0, the character at the location.
  */
-    .global lcd_set_color
-lcd_set_color:
-    push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
-    pop ax
+    .global screen_get_char
+screen_get_char:
+    pusha
+    push ds
+    push es
+
+    // DS:SI = source, ES:DI = destination
+    push ss
+    push ds
+    pop es
+    pop ds
+    call __display_screen_at
+    mov si, di
+    mov di, dx
+
+    // CL, CH = width, height
+    test cl, cl
+    jz 2f
+    test ch, ch
+    jz 2f
+
+    cld
+1:
+    // copy row using MOVSW
+    push cx
+    push di
+    xor ch, ch
+    rep movsw
+    pop di
+    pop cx
+
+    // advance to next column
+    add di, 32 * 2
+    dec ch
+    jnz 1b
+    jmp 3f
+
+2:
+    // read single character
+    mov ax, [si]
+
+3:
+    pop es
+    pop ds
+    popa
     ret

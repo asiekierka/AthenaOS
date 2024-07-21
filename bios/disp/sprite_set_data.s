@@ -27,17 +27,32 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=12h = sprite_set_data
  * Input:
- * - CX:BX = LCD shade LUT
+ * - BX = starting sprite ID
+ * - CX = sprite count
+ * - DS:DX = sprite data buffer
  * Output:
  */
-    .global lcd_set_color
-lcd_set_color:
-    push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
-    pop ax
+    .global sprite_set_data
+sprite_set_data:
+    pusha
+    push es
+
+    // ES:DI = destination
+    push ss
+    pop es
+    call __display_sprite_at
+
+    // DS:SI = source
+    mov si, dx
+
+    // CX = (sprites * 4) >> 1
+    add cx, cx
+
+    cld
+    rep movsw
+
+    pop es
+    popa
     ret

@@ -27,17 +27,18 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=0Dh - sprite_get_char
  * Input:
- * - CX:BX = LCD shade LUT
+ * - BX = sprite ID
  * Output:
+ * - AX = sprite attribute
  */
-    .global lcd_set_color
-lcd_set_color:
-    push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
-    pop ax
+    .global sprite_get_char
+sprite_get_char:
+    push di
+
+    call __display_sprite_at
+    ss mov ax, [di]
+    
+    pop di
     ret

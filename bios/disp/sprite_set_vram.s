@@ -27,17 +27,15 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=22h - sprite_set_vram
  * Input:
- * - CX:BX = LCD shade LUT
+ * - BL = VRAM location >> 9
  * Output:
  */
-    .global lcd_set_color
-lcd_set_color:
+    .global sprite_set_vram
+sprite_set_vram:
     push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
+    mov al, bl
+    out IO_SPR_BASE, al
     pop ax
     ret

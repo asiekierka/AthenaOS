@@ -27,17 +27,59 @@
 #include "../common.inc"
 
 /**
- * INT 12h AH=1Bh - lcd_set_color
+ * INT 12h AH=0Ah - screen_fill_attr
  * Input:
- * - CX:BX = LCD shade LUT
- * Output:
+ * - AL = screen ID
+ * - BL = X position
+ * - BH = Y position
+ * - CL = width
+ * - CH = height
+ * - DX = fill OR mask
+ * - SI = fill AND mask
  */
-    .global lcd_set_color
-lcd_set_color:
-    push ax
-    mov ax, cx
-    out IO_LCD_SHADE_45, ax
-    mov ax, bx
-    out IO_LCD_SHADE_01, ax
-    pop ax
+    .global screen_fill_attr
+screen_fill_attr:
+    pusha
+    push ds
+    push es
+
+    // (DS/ES):DI = destination
+    push ss
+    push ss
+    pop ds
+    pop es
+    call __display_screen_at
+
+    // CL, CH = width, height
+    test cl, cl
+    jz 3f
+    test ch, ch
+    jz 3f
+
+    // DX = data, SI = mask
+    cld
+1:
+    // modify row
+    push cx
+    push di
+    xor ch, ch
+2:
+    mov ax, [di]
+    and ax, si
+    or ax, dx
+    stosw
+    loop 2b
+
+    pop di
+    pop cx
+
+    // advance to next column
+    add di, 32 * 2
+    dec ch
+    jnz 1b
+
+3:
+    pop es
+    pop ds
+    popa
     ret
