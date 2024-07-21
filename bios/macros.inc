@@ -96,35 +96,3 @@
 .endif
 1:
 .endm
-
-/**
- * Emit a keypad scan routine.
- *
- * Input: -
- * Output: CX = keypad value
- * Clobber: AL, DX
- */
-.macro m_keypad_scan
-        mov     dx, 0x00B5
-
-        mov     al, 0x10
-        out     dx, al
-        daa
-        in      al, dx
-        and     al, 0x0F
-        mov     ch, al
-
-        mov     al, 0x20
-        out     dx, al
-        daa
-        in      al, dx
-        shl     al, 4
-        mov     cl, al
-
-        mov     al, 0x40
-        out     dx, al
-        daa
-        in      al, dx
-        and     al, 0x0F
-        or      cl, al
-.endm
