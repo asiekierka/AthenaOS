@@ -53,7 +53,7 @@ error_handle_print_num_row:
 	mov dx, [bp]
 	int 0x13
 	add bl, 5
-	dec bp, 2
+	sub bp, 2
 	cmp bl, 22
 	jbe 1b
 	ret

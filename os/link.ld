@@ -33,20 +33,11 @@ SECTIONS
 		*(".fartext&*" ".fartext.*&")
 		*(".farrodata&*" ".farrodata.*&")
 		"__etext&" = .;
-		. = ALIGN (16);
-	}
-
-	.erom . (NOLOAD) :
-	{
-		. = ALIGN (16);
-		"__erom" = .;
-		"__erom!" = .;
-		"__erom&" = .;
-		. = .;
+		. = ALIGN (2);
 	}
 
 	/* segelf segment start markers for target data section. */
-	".data!" 0x10000 (NOLOAD) : AT(ADDR(".erom") + SIZEOF(".erom"))
+	".data!" 0x10000 (NOLOAD) : AT(ADDR(".text") + SIZEOF(".text"))
 	{
 		"__sdata!" = .;
 		*(".rodata!*" ".rodata.*!")
@@ -57,7 +48,7 @@ SECTIONS
 	}
 
 	/* Target data section. */
-	.data 0x10000 : AT(ADDR(".erom") + SIZEOF(".erom"))
+	.data 0x10000 : AT(ADDR(".text") + SIZEOF(".text"))
 	{
 		__sdata = .;
 		*(.rodata ".rodata.*[^&]")
@@ -91,12 +82,6 @@ SECTIONS
 		*(".bss&*" ".bss.*&")
 		"__edata&" = .;
 		"__ebss& " = .;
-	}
-
-	/* ROM footer */
-	.footer . : AT(0xEFFFF)
-	{
-		BYTE(0xFF);
 	}
 
     /* Temporary workaround for avoiding debug relocation problems */

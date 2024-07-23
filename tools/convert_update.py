@@ -44,8 +44,12 @@ with open(args.input, "rb") as fin:
                 prev_b = 0xFF
             b = fin.read(1)
             if not b:
-                break
-            b = b[0]
+                # Pad to full 128-byte sector
+                if args.decrypt or ((i & 0x7F) == 0):
+                    break
+                b = 0xFF
+            else:
+                b = b[0]
 
             if args.decrypt:
                 new_b = b ^ prev_b
