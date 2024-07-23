@@ -22,7 +22,7 @@ SJIS_FONT	:= fonts/misaki/misaki_gothic.png
 # Tool paths
 # ----------
 
-PYTHON		:= python
+PYTHON		:= python3
 BIN2S		:= $(WONDERFUL_TOOLCHAIN)/bin/wf-bin2s
 
 # File paths
