@@ -58,6 +58,14 @@ __timer_set_type_irq:
 
 	ret
 
+/**
+ * INT 16h AH=07h - timer_enable
+ * Input:
+ * - AL = Timer (0 = HBlank, 1 = VBlank).
+ * - BX = Timer configuration
+ *   - bit 0 = 0 - one-shot, 1 - repeat
+ * - CX = Timer counter reload value
+ */
 	.global timer_enable
 timer_enable:
 	// preserve AX-DX
@@ -66,8 +74,8 @@ timer_enable:
 	push cx
 	push dx
 
-	push cx // store reload time
 	push bx // store timer configuration
+	push cx // store reload time
 
 	// disable timer
 	xor bx, bx
@@ -99,6 +107,11 @@ timer_enable:
 	mov ax, bp
 	ret
 
+/**
+ * INT 16h AH=08h - timer_disable
+ * Input:
+ * - AL = Timer (0 = HBlank, 1 = VBlank).
+ */
 	.global timer_disable
 timer_disable:
 	push ax
