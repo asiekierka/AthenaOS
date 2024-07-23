@@ -86,8 +86,9 @@ LIBDIRSFLAGS	:= $(foreach path,$(LIBDIRS),-L$(path)/lib)
 ASFLAGS		+= -x assembler-with-cpp $(DEFINES) $(WF_ARCH_CFLAGS) \
 		   $(INCLUDEFLAGS) -fno-function-sections -fdata-sections
 
+CFLAGS		?= -Os
 CFLAGS		+= -std=gnu11 $(WARNFLAGS) $(DEFINES) $(WF_ARCH_CFLAGS) \
-		   $(INCLUDEFLAGS) -fno-function-sections -fdata-sections -Os
+		   $(INCLUDEFLAGS) -fno-function-sections -fdata-sections
 
 LDFLAGS		:= -T$(WF_LDSCRIPT) \
 		   $(LIBDIRSFLAGS) -Wl,-Map,$(MAP) -Wl,--gc-sections \
