@@ -2,12 +2,16 @@
 
 Open source reimplementation of the FreyaBIOS/FreyaOS abstraction layer.
 
+## Motivation
+
 The main purpose of AthenaOS is achieving interoperability of freely available WonderWitch software with
 third-party emulators and cartridges. Acquiring a WonderWitch user or development kit in 2024 can cost
-anywhere between 150 and 500 USD, on top of the cost of the console itself, with no alternative solution
-available beyond the second hand market. At the same time, hundreds of games and programs are available
-at no cost, but cannot be lawfully executed without a program providing an implementation of the Freya
-abstraction layer APIs.
+anywhere between 150 and 500 USD, on top of the cost of the console itself. There is no alternative solution
+to run most WonderWitch games, other than the second hand market. As such, hundreds of games and applications
+have no way of being executed in a freely available environment. Like FreeDOS for DOS and WINE for Windows,
+the goal of AthenaOS is principally to build such a system.
+
+PS. If you just want to play Judgement Silversword, that one is available [on Steam](https://store.steampowered.com/app/278510/JUDGEMENT_SILVERSWORD__Resurrection/).
 
 ## Distribution contents
 

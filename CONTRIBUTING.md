@@ -12,6 +12,12 @@ available documentation. The best place to do so is the [WSdev Wiki](https://ws.
 it requires manual account verification - contact Fiskbit or asie to get your account verified. In addition,
 NESdev Wiki accounts can be used.
 
+Note that documentation should focus on the *public API surface* - that is, calls and information available to
+and made use of by user programs, and those implementation details which are known to affect said software. For
+example, we care that an interrupt call fills a screen rectangle with a specified tile, but information on which
+order it does so in may be unnecessary for implementing a compatible implementation. For more information, see
+"A note on reverse engineering" below.
+
 ## Creating test programs
 
 Instead of or in addition to writing documentation, one can create a test program which demonstrates the
