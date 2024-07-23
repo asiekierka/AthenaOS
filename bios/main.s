@@ -67,6 +67,12 @@ _start:
 	out IO_HWINT_ENABLE, al
 	sti
 
+	// initialize LCD shade LUT
+	mov bx, 0x9BDF
+	mov cx, 0x0246
+	mov ah, 0x1B
+	int 0x12
+
 	// jump to OS
 	jmp 0xE000:0x0000
 
