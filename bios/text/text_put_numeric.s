@@ -146,6 +146,9 @@ text_put_numeric:
     test ch, FLAG_ALIGN_LEFT // no alignment if left-aligned
     jnz .align_put_signed
 
+    cmp cl, dl
+    jle .align_put_signed // no alingment if width <= string length
+
     sub cl, dl
 
     test ch, FLAG_PAD_ZEROES

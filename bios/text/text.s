@@ -39,17 +39,17 @@ irq_text_handlers:
     .word text_fill_char
     .word text_set_palette
     .word text_get_palette
-    .word error_handle_generic // TODO: text_set_ank_font
-    .word error_handle_generic // TODO: text_set_sjis_font
+    .word error_handle_irq19 // TODO: text_set_ank_font
+    .word error_handle_irq19 // TODO: text_set_sjis_font
     .word text_get_fontdata
     .word text_set_screen
     .word text_get_screen
-    .word error_handle_generic // TODO: cursor_display
-    .word error_handle_generic // TODO: cursor_status
-    .word error_handle_generic // TODO: cursor_set_location
-    .word error_handle_generic // TODO: cursor_get_location
-    .word error_handle_generic // TODO: cursor_set_type
-    .word error_handle_generic // TODO: cursor_get_type
+    .word error_handle_irq19 // TODO: cursor_display
+    .word error_handle_irq19 // TODO: cursor_status
+    .word error_handle_irq19 // TODO: cursor_set_location
+    .word error_handle_irq19 // TODO: cursor_get_location
+    .word error_handle_irq19 // TODO: cursor_set_type
+    .word error_handle_irq19 // TODO: cursor_get_type
 
 	.global irq_text_handler
 irq_text_handler:

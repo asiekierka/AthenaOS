@@ -30,14 +30,14 @@
 irq_bank_handlers:
 	.word bank_set_map
 	.word bank_get_map
-	.word error_handle_generic // TODO: bank_read_byte
-	.word error_handle_generic // TODO: bank_write_byte
-	.word error_handle_generic // TODO: bank_read_word
-	.word error_handle_generic // TODO: bank_write_word
-	.word error_handle_generic // TODO: bank_read_block
-	.word error_handle_generic // TODO: bank_write_block
-	.word error_handle_generic // TODO: bank_fill_block
-	.word error_handle_generic // TODO: bank_erase_flash
+	.word error_handle_irq24 // TODO: bank_read_byte
+	.word error_handle_irq24 // TODO: bank_write_byte
+	.word error_handle_irq24 // TODO: bank_read_word
+	.word error_handle_irq24 // TODO: bank_write_word
+	.word error_handle_irq24 // TODO: bank_read_block
+	.word error_handle_irq24 // TODO: bank_write_block
+	.word error_handle_irq24 // TODO: bank_fill_block
+	.word error_handle_irq24 // TODO: bank_erase_flash
 
 	.global irq_bank_handler
 irq_bank_handler:

@@ -27,7 +27,7 @@
 #include "../common.inc"
 
 /**
- * INT 13h AH=05h - text_put_substring
+ * INT 13h AH=06h - text_put_substring
  * Input:
  * - BL = X position
  * - BH = Y position

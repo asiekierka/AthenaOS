@@ -28,13 +28,13 @@
 
 	.align 2
 irq_timer_handlers:
-	.word error_handle_generic // TODO: rtc_reset
-	.word error_handle_generic // TODO: rtc_set_datetime
-	.word error_handle_generic // TODO: rtc_get_datetime
-	.word error_handle_generic // TODO: rtc_set_datetime_struct
-	.word error_handle_generic // TODO: rtc_get_datetime_struct
-	.word error_handle_generic // TODO: rtc_enable_alarm
-	.word error_handle_generic // TODO: rtc_disable_alarm
+	.word error_handle_irq22 // TODO: rtc_reset
+	.word error_handle_irq22 // TODO: rtc_set_datetime
+	.word error_handle_irq22 // TODO: rtc_get_datetime
+	.word error_handle_irq22 // TODO: rtc_set_datetime_struct
+	.word error_handle_irq22 // TODO: rtc_get_datetime_struct
+	.word error_handle_irq22 // TODO: rtc_enable_alarm
+	.word error_handle_irq22 // TODO: rtc_disable_alarm
 	.word timer_enable
 	.word timer_disable
 	.word timer_get_count
