@@ -55,6 +55,8 @@ To submit a patch, make a pull request on GitHub.
 
 ## Testing
 
-Finally, you can test existing WonderWitch software to let us know if it is compatible or not.
+Finally, you can test existing WonderWitch software to let us know if it is compatible or not:
 
-TODO
+1. Compile AthenaBIOS and AthenaOS (see the main README).
+2. Run `python tools/build_rom.py output.wsc dist/AthenaBIOS*.raw dist/AthenaOS*.raw [.fx files...]` to build a ROM image for testing.
+3. Run `output.wsc` in your emulator of choice - for debugging, one option is [wf-mednafen](https://github.com/WonderfulToolchain/wf-mednafen/releases).

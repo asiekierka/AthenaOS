@@ -9,6 +9,33 @@ available beyond the second hand market. At the same time, hundreds of games and
 at no cost, but cannot be lawfully executed without a program providing an implementation of the Freya
 abstraction layer APIs.
 
+## Distribution contents
+
+* `AthenaBIOS.raw` - BIOS/System image (raw)
+* `AthenaBIOS.bin` - BIOS/System image (XMODEM update format)
+* `AthenaOS.raw` - OS/Soft image (raw)
+* `AthenaOS.bin` - OS/Soft image (XMODEM update format)
+
+## Building
+
+### Requirements
+
+* Wonderful toolchain. See [Getting Started](https://wonderful.asie.pl/docs/getting-started/) for installation instructions
+  * After installation, run `wf-pacman -S target-wswan` to install the WonderSwan components.
+  * Additional documentation available [here](https://wonderful.asie.pl/wiki/doku.php?id=wswan:index).
+* Python 3 with the Pillow image library
+  * Windows/MSYS2: `pacman -S mingw-w64-ucrt-x86_64-python mingw-w64-ucrt-x86_64-python-pillow`
+  * Debian: `apt-get install python3 python3-pil`
+  * Arch Linux: `pacman -S python python-pillow`
+* GNU Make
+  * Windows/MSYS2: `pacman -S make`
+
+### Build steps
+
+    $ make
+
+The build process results should now be available in `dist/`. ELF object files and other intermediate outputs are placed in `build/`.
+
 ## License
 
 AthenaBIOS and AthenaOS are provided under the MIT license.

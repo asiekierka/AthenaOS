@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2023 Adrian "asie" Siekierka
+# Copyright (c) 2023, 2024 Adrian "asie" Siekierka
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,41 @@ import argparse
 import sys
 
 parser = argparse.ArgumentParser(
-    prog = 'concat_roms',
+    prog = 'build_rom',
     description = 'Concatenates .RAW images to a ROM file.'
 )
+parser.add_argument('output')
 parser.add_argument('system')
 parser.add_argument('soft')
-parser.add_argument('output')
+parser.add_argument('files', nargs='*')
 
 args = parser.parse_args()
 system_data = None
 soft_data = None
+files = {}
 
 with open(args.system, "rb") as fin:
     system_data = fin.read()
 with open(args.soft, "rb") as fin:
     soft_data = fin.read()
-with open(args.output, "wb") as fout:
-    fout.write(bytes([0xFF] * (384 * 1024)))
-    fout.write(bytes(soft_data))
-    fout.write(bytes([0xFF] * (65536 - len(soft_data))))
-    fout.write(bytes(system_data))
-    fout.write(bytes([0xFF] * (65536 - len(system_data))))
+for fn in args.files:
+    with open(fn, "rb") as fin:
+        files[fn] = fin.read()
 
+if len(system_data) != 65536:
+    raise Exception('The System image should be exactly 64 kilobytes')
+
+# TODO: Implement file system support.
+filesystem_data = bytes()
+
+if len(files) > 1:
+    raise Exception('More than one file is not currently supported')
+elif len(files) == 1:
+    filesystem_data = next(iter(files.values()))
+
+with open(args.output, "wb") as fout:
+    fout.write(bytes(filesystem_data))
+    fout.write(bytes([0xFF] * ((384 * 1024) - len(filesystem_data))))
+    fout.write(bytes(soft_data))
+    fout.write(bytes([0xFF] * ((64 * 1024) - len(soft_data))))
+    fout.write(bytes(system_data))
