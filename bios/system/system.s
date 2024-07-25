@@ -38,7 +38,7 @@ irq_system_handlers:
     .word error_handle_irq23 // TODO: sys_set_awake_key
     .word error_handle_irq23 // TODO: sys_get_awake_key
     .word error_handle_irq23 // TODO: sys_set_keepalive_int
-    .word error_handle_irq23 // TODO: sys_get_ownerinfo
+    .word sys_get_ownerinfo
     .word error_handle_irq23 // TODO: sys_suspend
     .word error_handle_irq23 // TODO: sys_resume
     .word error_handle_irq23 // TODO: sys_set_remote

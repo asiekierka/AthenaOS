@@ -17,5 +17,5 @@ void main(void) {
 		text_put_numeric(18, i+2, 0, i, 3456);
 	}
 
-	while(1);
+	while(key_wait() != KEY_B);
 }

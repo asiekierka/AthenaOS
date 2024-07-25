@@ -36,7 +36,12 @@ void main(void) {
 			);
 		}
 
-		while (key_hit_check() != KEY_A);
+		while (true) {
+			uint16_t k = key_wait();
+			if (k == KEY_A) break;
+			if (k == KEY_B) return;
+		}
+
 		curr_mode = (curr_mode + 1) % 3;
 	}
 }

@@ -24,7 +24,7 @@ void main(void) {
 	sys_interrupt_set_hook(SYS_INT_TIMER_COUNTUP, &hook_new, &hook_old);
 	timer_enable(TIMER_VBLANK, TIMER_AUTOPRESET, 2);
 
-	while(1);
+	while(key_wait() != KEY_B);
 
 	sys_interrupt_reset_hook(SYS_INT_TIMER_COUNTUP, &hook_old);
 }
