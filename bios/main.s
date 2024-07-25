@@ -97,7 +97,7 @@ irq_handlers:
 	.word irq_key_handler				// 0x11 (BIOS - Key)
 	.word irq_disp_handler				// 0x12 (BIOS - Display)
 	.word irq_text_handler				// 0x13 (BIOS - Text)
-	.word error_handle_generic			// TODO: 0x14 (BIOS - Comm)
+	.word irq_comm_handler				// 0x14 (BIOS - Comm)
 	.word irq_sound_handler				// 0x15 (BIOS - Sound)
 	.word irq_timer_handler 			// 0x16 (BIOS - Timer)
 	.word irq_system_handler			// 0x17 (BIOS - System)

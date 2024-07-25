@@ -39,10 +39,10 @@
  * @param entry_count Number of entries in jump table; 0 to skip.
  * @param flags Flags for handler generation.
  */
-.macro m_irq_table_handler jump_table_start, entry_count=0, flags=0
+.macro m_irq_table_handler jump_table_start, entry_count=0, flags=0, out_of_bounds_label=1f
 .if \entry_count > 0
 	cmp ah, \entry_count
-	jae 1f
+	jae \out_of_bounds_label
 .endif
 .if \flags & M_IRQ_PUSH_ES
 	push es

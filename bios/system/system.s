@@ -53,5 +53,5 @@ irq_system_handlers:
 
 	.global irq_system_handler
 irq_system_handler:
-	m_irq_table_handler irq_system_handlers, 22
+	m_irq_table_handler irq_system_handlers, 22, 0, error_handle_irq23
 	iret

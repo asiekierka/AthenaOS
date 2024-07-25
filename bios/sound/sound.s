@@ -46,5 +46,5 @@ irq_sound_handlers:
 
 	.global irq_sound_handler
 irq_sound_handler:
-	m_irq_table_handler irq_sound_handlers, 15
+	m_irq_table_handler irq_sound_handlers, 15, 0, error_handle_irq21
 	iret

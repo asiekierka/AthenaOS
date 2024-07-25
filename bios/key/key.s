@@ -37,5 +37,5 @@ irq_key_handlers:
 
 	.global irq_key_handler
 irq_key_handler:
-	m_irq_table_handler irq_key_handlers, 6
+	m_irq_table_handler irq_key_handlers, 6, 0, error_handle_irq17
 	iret

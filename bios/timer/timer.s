@@ -41,5 +41,5 @@ irq_timer_handlers:
 
 	.global irq_timer_handler
 irq_timer_handler:
-	m_irq_table_handler irq_timer_handlers, 10
+	m_irq_table_handler irq_timer_handlers, 10, 0, error_handle_irq22
 	iret

@@ -41,5 +41,5 @@ irq_bank_handlers:
 
 	.global irq_bank_handler
 irq_bank_handler:
-	m_irq_table_handler irq_bank_handlers, 10, M_IRQ_PUSH_DX
+	m_irq_table_handler irq_bank_handlers, 10, M_IRQ_PUSH_DX, error_handle_irq24
 	iret

@@ -27,48 +27,23 @@
 #include "../common.inc"
 
 	.align 2
-irq_disp_handlers:
-	.word display_control
-	.word display_status
-	.word font_set_monodata
-	.word font_set_colordata
-	.word font_get_data
-	.word font_set_color
-	.word font_get_color
-	.word screen_set_char
-	.word screen_get_char
-	.word screen_fill_char
-	.word screen_fill_attr
-	.word sprite_set_range
-	.word sprite_set_char
-	.word sprite_get_char
-	.word sprite_set_location
-	.word sprite_get_location
-	.word sprite_set_char_location
-	.word sprite_get_char_location
-	.word sprite_set_data
-	.word screen_set_scroll
-	.word screen_get_scroll
-	.word screen2_set_window
-	.word screen2_get_window
-	.word sprite_set_window
-	.word sprite_get_window
-	.word palette_set_color
-	.word palette_get_color
-	.word lcd_set_color
-	.word lcd_get_color
-	.word lcd_set_segments
-	.word lcd_get_segments
-	.word lcd_set_sleep
-	.word lcd_get_sleep
-	.word screen_set_vram
-	.word sprite_set_vram
+irq_comm_handlers:
+	.word error_handle_irq20 // TODO: comm_open
+	.word error_handle_irq20 // TODO: comm_close
+	.word error_handle_irq20 // TODO: comm_send_char
+	.word error_handle_irq20 // TODO: comm_receive_char
+	.word error_handle_irq20 // TODO: comm_receive_with_timeout
+	.word error_handle_irq20 // TODO: comm_send_string
+	.word error_handle_irq20 // TODO: comm_send_block
+	.word error_handle_irq20 // TODO: comm_receive_block
+	.word error_handle_irq20 // TODO: comm_set_timeout
+	.word error_handle_irq20 // TODO: comm_set_baudrate
+	.word error_handle_irq20 // TODO: comm_get_baudrate
+	.word error_handle_irq20 // TODO: comm_set_cancel_key
+	.word error_handle_irq20 // TODO: comm_get_cancel_key
+	.word error_handle_irq20 // TODO: comm_xmodem
 
-	.global irq_disp_handler
-irq_disp_handler:
-	m_irq_table_handler irq_disp_handlers, 35, 0, error_handle_irq18
+	.global irq_comm_handler
+irq_comm_handler:
+	m_irq_table_handler irq_comm_handlers, 14, 0, error_handle_irq20
 	iret
-
-    .section ".data"
-    .global disp_font_color
-disp_font_color: .byte 3
