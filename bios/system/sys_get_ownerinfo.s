@@ -52,7 +52,6 @@ transform_bcd8_al:
 
     // transform one 16-bit BCD number to int
 transform_bcd16:
-    push dx
     push ax
     call transform_bcd8_al
     mov bx, ax
@@ -60,11 +59,8 @@ transform_bcd16:
     mov al, ah
     call transform_bcd8_al
     // AX = lower 0-99, BX = upper 0-99
-    xchg ax, bx
-    mov cl, 100
-    mul cl // AX = AL * 100
+    imul bx, 100 // BX = BX * 100
     add ax, bx
-    pop dx
     ret
 
     // transform two 8-bit BCD numbers to int
