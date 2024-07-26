@@ -37,9 +37,12 @@ cursor_display:
     push bx
     // text_cursor_mode = (text_cursor_mode & 0xFE) | (AL & 0x01)
     mov bh, al
+    pushf
+    cli // Interrupt guard - avoid a race condition between the VBlank IRQ and cursor change
     ss mov bl, [text_cursor_mode]
     and bx, 0x01FE
     or bl, bh
     ss mov [text_cursor_mode], bl
+    popf
     pop bx
     ret
