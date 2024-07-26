@@ -47,13 +47,13 @@ error_handle_print_reg_names_row:
 
 // Print register row (numbers)
 error_handle_print_num_row:
-	add bp, 8
+	add bp, 10
 	mov bl, 2
 1:
+	sub bp, 2
 	mov dx, [bp]
 	int 0x13
 	add bl, 5
-	sub bp, 2
 	cmp bl, 22
 	jbe 1b
 	ret
@@ -73,6 +73,7 @@ error_handle_start:
 	// +4	DI
 	// +6	SI
 	// +8	BP
+	// +10	SP
 	// +12	BX
 	// +14	DX
 	// +16	CX
@@ -181,6 +182,6 @@ error_handle_irq:
 	.section ".text.error_handle_irq\i\()", "ax"
 	.global error_handle_irq\i
 error_handle_irq\i\():
-	push \i
+	push offset \i
 	jmp error_handle_irq
 .endr
