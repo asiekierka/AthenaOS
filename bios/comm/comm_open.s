@@ -26,36 +26,18 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_comm_handlers:
-	.word comm_open
-	.word comm_close
-	.word error_handle_irq20 // TODO: comm_send_char
-	.word error_handle_irq20 // TODO: comm_receive_char
-	.word error_handle_irq20 // TODO: comm_receive_with_timeout
-	.word error_handle_irq20 // TODO: comm_send_string
-	.word error_handle_irq20 // TODO: comm_send_block
-	.word error_handle_irq20 // TODO: comm_receive_block
-	.word comm_set_timeout
-	.word comm_set_baudrate
-	.word comm_get_baudrate
-	.word comm_set_cancel_key
-	.word comm_get_cancel_key
-	.word error_handle_irq20 // TODO: comm_xmodem
-
-	.global irq_comm_handler
-irq_comm_handler:
-	m_irq_table_handler irq_comm_handlers, 14, 0, error_handle_irq20
-	iret
-
-	.section ".data"
-	.global comm_recv_timeout
-comm_recv_timeout: .word 0xFFFF
-	.global comm_send_timeout
-comm_send_timeout: .word 0xFFFF
-
-	.section ".bss"
-	.global comm_baudrate
-comm_baudrate: .byte 0
-	.global comm_cancel_key
-comm_cancel_key: .word 0
+/**
+ * INT 14h AH=00h - comm_open
+ * Input:
+ * Output:
+ */
+    .global comm_open
+comm_open:
+    push ax
+    ss mov al, [comm_baudrate]
+    shl al, 6
+    and al, SERIAL_BAUD_38400
+    or al, (SERIAL_ENABLE | SERIAL_OVERRUN_RESET)
+    out IO_SERIAL_STATUS, al
+    pop ax
+    ret

@@ -73,6 +73,10 @@ _start:
 	mov ah, 0x1B
 	int 0x12
 
+	// initialize sound system
+	xor ax, ax
+	int 0x15
+
 	// jump to OS
 	jmp 0xE000:0x0000
 

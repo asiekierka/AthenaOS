@@ -35,10 +35,8 @@
  */
 	.global sound_init
 sound_init:
-	push ax
-	push cx
+	pusha
 	push es
-	push di
 
 	// clear wave table
 	push ss
@@ -53,8 +51,10 @@ sound_init:
 	// clear sound channel/output registers
 	out IO_SND_CH_CTRL, ax
 
-	pop di
+	// configure wavetable base
+	mov al, (MEM_WAVETABLE >> 6)
+	out IO_SND_WAVE_BASE, al
+
 	pop es
-	pop cx
-	pop ax
+	popa
 	ret
