@@ -44,25 +44,31 @@ irq_text_handlers:
     .word text_get_fontdata
     .word text_set_screen
     .word text_get_screen
-    .word error_handle_irq19 // TODO: cursor_display
-    .word error_handle_irq19 // TODO: cursor_status
-    .word error_handle_irq19 // TODO: cursor_set_location
-    .word error_handle_irq19 // TODO: cursor_get_location
-    .word error_handle_irq19 // TODO: cursor_set_type
-    .word error_handle_irq19 // TODO: cursor_get_type
+    .word cursor_display
+    .word cursor_status
+    .word cursor_set_location
+    .word cursor_get_location
+    .word cursor_set_type
+    .word cursor_get_type
 
 	.global irq_text_handler
 irq_text_handler:
 	m_irq_table_handler irq_text_handlers, 22, 0, error_handle_irq19
 	iret
 
+    .section ".data"
+    .global text_cursor_color
+text_cursor_color: .byte 1
+    .global text_cursor_rate
+text_cursor_rate:  .byte 30
+
     .section ".bss"
     .global text_screen
 text_screen: .byte 0
     .global text_mode
 text_mode: .byte 0
-    .global text_palette
-text_palette: .byte 0
+    .global text_color
+text_color: .byte 0
     .global text_wx
 text_wx: .byte 0
     .global text_wy
@@ -73,3 +79,17 @@ text_ww: .byte 0
 text_wh: .byte 0
     .global text_base
 text_base: .word 0
+    .global text_cursor_x
+text_cursor_x: .byte 0
+    .global text_cursor_y
+text_cursor_y: .byte 0
+    .global text_cursor_w
+text_cursor_w: .byte 0
+    .global text_cursor_h
+text_cursor_h: .byte 0
+    // Bit 0 - is cursor blinking enabled?
+    // Bit 1 - is cursor blinking active?
+    .global text_cursor_mode
+text_cursor_mode: .byte 0
+    .global text_cursor_counter
+text_cursor_counter: .byte 0

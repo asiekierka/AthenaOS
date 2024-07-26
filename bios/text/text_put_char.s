@@ -91,11 +91,11 @@ text_put_char_ank:
 1:
     mov al, [text_screen]
     call __display_screen_at
-    mov al, [text_palette]
+    mov al, [text_color]
     shl ax, 9
     add cx, ax
     add cx, [text_base]
-    mov [di], cx // [DI] = CX | (text_palette << 9)
+    mov [di], cx // [DI] = CX | (text_color << 9)
 
 text_put_char_end:
     pop es

@@ -26,58 +26,14 @@
 
 #include "../common.inc"
 
-
-    .global __text_window_clear
-__text_window_clear:
-    pusha
-    push ds
-    push es
-    push ss
-    push ss
-    pop ds
-    pop es
-
-    cmp byte ptr [text_mode], 0
-    je __text_window_clear_ank
-__text_window_clear_sjis:
-    mov si, 1
-    jmp __text_window_clear_loop
-    
-__text_window_clear_ank:
-    mov si, 0
-    
-    // SI = increment value
-__text_window_clear_loop:
-    // DI (temporary) = value to set on screen
-    mov di, [text_base]
-    mov al, [text_color]
-    shl ax, 9
-    add di, ax
-    // BL = X, BH = Y
-    mov bx, [text_wx]
-    call __text_tilemap_at
-    // AX = value to set on screen
-    // ES:DI = location to write to
-    xchg di, ax
-    // DX = height counter
-    xor dx, dx
-    mov dl, [text_wh]
-2:
-    push di
-    // CX = width counter
-    xor cx, cx
-    mov cl, [text_ww]
-1:
-    stosw
-    add ax, si
-    loop 1b
-    pop di
-    add di, 64
-    dec dx
-    jnz 2b
-
-__text_window_clear_end:
-    pop es
-    pop ds
-    popa
+/**
+ * INT 13h AH=15h - cursor_get_type
+ * Input:
+ * Output:
+ * - AL = Cursor area palette
+ * - AH = Rate, in frames
+ */
+    .global cursor_get_type
+cursor_get_type:
+    ss mov ax, [text_cursor_color]
     ret

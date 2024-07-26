@@ -34,5 +34,5 @@
  */
     .global text_set_palette
 text_set_palette:
-    ss mov [text_palette], bl
+    ss mov [text_color], bl
     ret

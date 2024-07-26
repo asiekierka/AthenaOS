@@ -35,5 +35,5 @@
     .global text_get_palette
 text_get_palette:
     xor ax, ax
-    ss mov al, [text_palette]
+    ss mov al, [text_color]
     ret

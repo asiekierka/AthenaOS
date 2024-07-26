@@ -26,58 +26,26 @@
 
 #include "../common.inc"
 
-
-    .global __text_window_clear
-__text_window_clear:
+/**
+ * INT 13h AH=12h - cursor_set_location
+ * Input:
+ * - BL = X position
+ * - BH = Y position
+ * - CL = Width, in tiles
+ * - CH = Height, in tiles
+ * Output:
+ */
+    .global cursor_set_location
+cursor_set_location:
     pusha
-    push ds
-    push es
-    push ss
-    push ss
-    pop ds
-    pop es
-
-    cmp byte ptr [text_mode], 0
-    je __text_window_clear_ank
-__text_window_clear_sjis:
-    mov si, 1
-    jmp __text_window_clear_loop
-    
-__text_window_clear_ank:
-    mov si, 0
-    
-    // SI = increment value
-__text_window_clear_loop:
-    // DI (temporary) = value to set on screen
-    mov di, [text_base]
-    mov al, [text_color]
-    shl ax, 9
-    add di, ax
-    // BL = X, BH = Y
-    mov bx, [text_wx]
-    call __text_tilemap_at
-    // AX = value to set on screen
-    // ES:DI = location to write to
-    xchg di, ax
-    // DX = height counter
-    xor dx, dx
-    mov dl, [text_wh]
-2:
-    push di
-    // CX = width counter
-    xor cx, cx
-    mov cl, [text_ww]
-1:
-    stosw
-    add ax, si
-    loop 1b
-    pop di
-    add di, 64
-    dec dx
-    jnz 2b
-
-__text_window_clear_end:
-    pop es
-    pop ds
+    // Clear previous cursor location
+    ss mov dl, [text_color]
+    call __cursor_fill
+    // Clear counter and "cursor turned on?" bit
+    ss and word ptr [text_cursor_mode], 0x0001
     popa
+
+    // Set new cursor location
+    ss mov [text_cursor_x], bx
+    ss mov [text_cursor_w], cx
     ret
