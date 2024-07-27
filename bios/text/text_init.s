@@ -31,9 +31,7 @@
  */
     .global text_screen_init
 text_screen_init:
-    push bx
-    push cx
-    push dx
+    pusha
     // Initialize screen from 0,0 to 28,18
     mov bx, ( 0 | ( 0 << 8))
     mov cx, (28 | (18 << 8))
@@ -43,9 +41,7 @@ text_screen_init:
     mov dx, (512 - SJIS_SCREEN_TILES)
 1:
     call text_window_init
-    pop dx
-    pop cx
-    pop bx
+    popa
     ret
 
 /**
