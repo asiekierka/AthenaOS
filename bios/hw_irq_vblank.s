@@ -113,6 +113,15 @@ hw_irq_vblank_handler:
 
 .vbl_cursor_action:
     mov ah, [text_cursor_rate]
+    test ah, ah
+    jnz 1f // If not zero, count down
+
+    // If zero, always fill
+    or al, 0x2
+    mov [text_cursor_mode], ax
+    jmp .vbl_cursor_fill
+
+1:
     dec ah
     xor al, 0x2
     mov [text_cursor_mode], ax
