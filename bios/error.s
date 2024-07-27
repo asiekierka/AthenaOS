@@ -90,15 +90,14 @@ error_handle_start:
 	mov ax, 0x2100 // Set screen 1 location to 0x3000
 	mov bl, (0x3000 >> 11)
 	int 0x12
-	mov bx, 0x9BDF // Initialize LCD shade LUT
-	mov cx, 0x0246
-	mov ah, 0x1B
-	int 0x12
-	xor bx, bx // Set palette 0 colors
-	mov cx, 0x0257
-	mov ah, 0x19
-	int 0x12
+	mov ax, 0x9BDF // Initialize LCD shade LUT
+	out IO_LCD_SHADE_45, ax
+	mov ax, 0x0246
+	out IO_LCD_SHADE_01, ax
+	mov ax, 0x0257 // Set palette 0 colors
+	out IO_SCR_PAL_0, ax
 	mov ax, 0x0200 // Set mode to 0 (ASCII)
+	xor bx, bx
 	int 0x13
 	mov ah, 0x09 // Set palette to 0
 	int 0x13
@@ -106,6 +105,12 @@ error_handle_start:
 	int 0x13
 	xor ax, ax // Initialize screen
 	int 0x13
+
+	in al, 0x60
+	and al, 0x9F
+	out 0x60, al
+	ss mov word ptr [0xFE00], 0x0FFF
+	ss mov word ptr [0xFE06], 0x0000
 
 	// Print register state
 	mov ah, 0x07
