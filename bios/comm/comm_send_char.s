@@ -26,36 +26,39 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_comm_handlers:
-	.word comm_open
-	.word comm_close
-	.word comm_send_char
-	.word comm_receive_char
-	.word comm_receive_with_timeout
-	.word comm_send_string
-	.word comm_send_block
-	.word comm_receive_block
-	.word comm_set_timeout
-	.word comm_set_baudrate
-	.word comm_get_baudrate
-	.word comm_set_cancel_key
-	.word comm_get_cancel_key
-	.word error_handle_irq20 // TODO: comm_xmodem
+/**
+ * INT 14h AH=02h - comm_send_char
+ * Input:
+ * - BL = Character
+ * Output:
+ * - AX = Status
+ */
+    .global comm_send_char
+comm_send_char:
+    push bx
+    push cx
 
-	.global irq_comm_handler
-irq_comm_handler:
-	m_irq_table_handler irq_comm_handlers, 14, 0, error_handle_irq20
-	iret
+    mov bh, (SERIAL_TX_READY)
+    ss mov cx, [comm_send_timeout]
+    call __comm_wait_timeout
+    test ah, ah
+    jnz 8f
 
-	.section ".data"
-	.global comm_baudrate
-comm_baudrate: .byte 1 // 38400 bps
-	.global comm_recv_timeout
-comm_recv_timeout: .word 0xFFFF
-	.global comm_send_timeout
-comm_send_timeout: .word 0xFFFF
+    // send character
+    mov al, bl
+    out IO_SERIAL_DATA, al
 
-	.section ".bss"
-	.global comm_cancel_key
-comm_cancel_key: .word 0
+    // return success code
+    xor ax, ax
+    jmp 9f
+
+8:
+    // convert __comm_wait_timeout result to error code
+    xchg ah, al
+    mov ah, 0x81
+
+9:
+    pop cx
+    pop bx
+    ret
+

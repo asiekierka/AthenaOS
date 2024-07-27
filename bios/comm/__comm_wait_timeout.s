@@ -26,24 +26,64 @@
 
 #include "../common.inc"
 
-/**
- * INT 17h AH=02h - sys_wait
- * Input:
- * - CX = Frames to wait
- */
-    .global sys_wait
-sys_wait:
+    // Input:
+    // - BH = awaited mask (any bit)
+    // - CX = timeout
+    // Output:
+    // - AH = 0 if success, 1 if timeout, 2 if overrun, 3 if cancel
+    // - AL = (serial status & BH)
+    // Clobber: AX
+    //
+    // TODO: Halt CPU while waiting for serial input.
+    // Note that the serial send/receive interrupts will loop
+    // indefinitely until the byte is sent/received.
+    
+    .global __comm_wait_timeout
+__comm_wait_timeout:
     pushf
-    push cx
-    ss add cx, [tick_count]
+    push dx
     sti
+
+    ss mov dx, [tick_count]
+    add dx, cx // DX = final tick count
+
 1:
-    ss cmp cx, [tick_count]
-    jle 2f
-    hlt
-    nop
-    jmp 1b
+    xor ax, ax
+    in al, IO_SERIAL_STATUS
+    and al, bh
+    jnz 8f // received mask?
+
+    cmp cx, 0xFFFF
+    je 2f // skip timeout?
+
+    test cx, cx
+    jz 7f // zero timeout?
+    ss cmp dx, [tick_count]
+    jle 7f // timeout?
+
 2:
-    pop cx
+    // check for cancel key
+    ss mov ax, [comm_cancel_key]
+    test ax, ax
+    jz 1b // cancel key not set?
+    ss and ax, [keys_held]
+    ss cmp ax, [comm_cancel_key]
+    jne 1b // cancel key combo not matched?
+
+    mov ah, 3 // return cancel
+    jmp 9f
+
+7:
+    mov ah, 1 // return timeout
+    jmp 9f
+
+8:
+    test al, SERIAL_OVERRUN
+    jz 9f // not overrun? (only checked if overrun in mask)
+    mov ah, 2 // return overrun
+
+9:
+    pop dx
     popf
     ret
+

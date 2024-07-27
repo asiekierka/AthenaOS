@@ -26,36 +26,17 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_comm_handlers:
-	.word comm_open
-	.word comm_close
-	.word comm_send_char
-	.word comm_receive_char
-	.word comm_receive_with_timeout
-	.word comm_send_string
-	.word comm_send_block
-	.word comm_receive_block
-	.word comm_set_timeout
-	.word comm_set_baudrate
-	.word comm_get_baudrate
-	.word comm_set_cancel_key
-	.word comm_get_cancel_key
-	.word error_handle_irq20 // TODO: comm_xmodem
+/**
+ * INT 14h AH=03h - comm_receive_char
+ * Input:
+ * Output:
+ * - AX = Character or status
+ */
+    .global comm_receive_char
+comm_receive_char:
+    push cx
+    ss mov cx, [comm_recv_timeout]
+    call comm_receive_with_timeout
+    pop cx
+    ret
 
-	.global irq_comm_handler
-irq_comm_handler:
-	m_irq_table_handler irq_comm_handlers, 14, 0, error_handle_irq20
-	iret
-
-	.section ".data"
-	.global comm_baudrate
-comm_baudrate: .byte 1 // 38400 bps
-	.global comm_recv_timeout
-comm_recv_timeout: .word 0xFFFF
-	.global comm_send_timeout
-comm_send_timeout: .word 0xFFFF
-
-	.section ".bss"
-	.global comm_cancel_key
-comm_cancel_key: .word 0

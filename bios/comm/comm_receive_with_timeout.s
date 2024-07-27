@@ -26,36 +26,38 @@
 
 #include "../common.inc"
 
-	.align 2
-irq_comm_handlers:
-	.word comm_open
-	.word comm_close
-	.word comm_send_char
-	.word comm_receive_char
-	.word comm_receive_with_timeout
-	.word comm_send_string
-	.word comm_send_block
-	.word comm_receive_block
-	.word comm_set_timeout
-	.word comm_set_baudrate
-	.word comm_get_baudrate
-	.word comm_set_cancel_key
-	.word comm_get_cancel_key
-	.word error_handle_irq20 // TODO: comm_xmodem
+/**
+ * INT 14h AH=04h - comm_receive_with_timeout
+ * Input:
+ * - CX = Timeout, in frames
+ * Output:
+ * - AX = Character or status
+ */
+    .global comm_receive_with_timeout
+comm_receive_with_timeout:
+    push bx
 
-	.global irq_comm_handler
-irq_comm_handler:
-	m_irq_table_handler irq_comm_handlers, 14, 0, error_handle_irq20
-	iret
+    // Clear overrun, in case it occured before.
+    in al, IO_SERIAL_STATUS
+    or al, SERIAL_OVERRUN_RESET
+    out IO_SERIAL_STATUS, al
 
-	.section ".data"
-	.global comm_baudrate
-comm_baudrate: .byte 1 // 38400 bps
-	.global comm_recv_timeout
-comm_recv_timeout: .word 0xFFFF
-	.global comm_send_timeout
-comm_send_timeout: .word 0xFFFF
+    mov bh, (SERIAL_OVERRUN | SERIAL_RX_READY)
+    call __comm_wait_timeout
+    test ah, ah
+    jnz 8f
 
-	.section ".bss"
-	.global comm_cancel_key
-comm_cancel_key: .word 0
+    // receive character
+    xor ax, ax
+    in al, IO_SERIAL_DATA
+    jmp 9f
+
+8:
+    // convert __comm_wait_timeout result to error code
+    xchg ah, al
+    mov ah, 0x81
+
+9:
+    pop bx
+    ret
+
