@@ -25,21 +25,38 @@
 	.intel_syntax noprefix
 
 #include "common.inc"
+#include "bank/bank_macros.inc"
 
-	.align 2
-irq_bank_handlers:
-	.word bank_set_map
-	.word bank_get_map
-	.word bank_read_byte
-	.word bank_write_byte
-	.word bank_read_word
-	.word bank_write_word
-	.word bank_read_block
-	.word bank_write_block
-	.word bank_fill_block
-	.word bank_erase_flash
+/**
+ * INT 18h AH=08h - bank_fill_block
+ * Input:
+ * - AL = Fill value
+ * - BX = Bank ID
+ *   - 0000 ~ 7FFF = SRAM
+ *   - 8000 ~ FFFF = ROM/Flash
+ * - CX = Bytes to write (0 treated as 65536)
+ * - DX = Address within bank
+ */
+    .global bank_fill_block
+bank_fill_block:
+#ifndef BIOS_BANK_MAPPER_SIMPLE_RAM
+    test bh, 0x80
+    jnz error_handle_write_to_rom
+#endif
+    push ax
+    mov di, dx
+    mov si, ax
+    bank_rw_bx_to_segment_start es
+    mov ax, si
+    mov ah, al
+    dec cx
+    shr cx, 1
+    rep stosw
+    jnc 1f
+    stosb
+1:
+    stosb
+    bank_rw_bx_to_segment_end_unsafe
+    pop ax
+    ret
 
-	.global irq_bank_handler
-irq_bank_handler:
-	m_irq_table_handler irq_bank_handlers, 10, (M_IRQ_PUSH_BX | M_IRQ_PUSH_CX | M_IRQ_PUSH_DX | M_IRQ_PUSH_SI | M_IRQ_PUSH_DI | M_IRQ_PUSH_DS | M_IRQ_PUSH_ES), error_handle_irq24
-	iret

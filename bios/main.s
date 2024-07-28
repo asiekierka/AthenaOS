@@ -68,10 +68,16 @@ _start:
 	sti
 
 	// initialize LCD shade LUT
-	mov bx, 0x9BDF
-	mov cx, 0x0246
-	mov ah, 0x1B
-	int 0x12
+	mov ax, 0x9BDF
+	out 0x1C, ax
+	mov ax, 0x0246
+	out 0x1E, ax
+
+	// initialize default palette
+	mov ax, 0x0257
+	out 0x20, ax
+	mov ax, 0x7520
+	out 0x22, ax
 
 	// initialize sound system
 	xor ax, ax

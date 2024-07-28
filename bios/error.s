@@ -161,6 +161,22 @@ error_handle_generic:
 
 	jmp error_handle_end
 
+	.section ".text.error_handle_write_to_rom", "ax"
+s_cannot_write_to_rom:
+	.asciz "Cannot write to ROM"
+
+	.global error_handle_write_to_rom
+error_handle_write_to_rom:
+	call error_handle_start
+
+	// Print generic error message
+	mov bx, 0x0101
+	mov dx, offset s_cannot_write_to_rom
+	mov ah, 0x05
+	int 0x13
+
+	jmp error_handle_end
+
 	.section ".text.error_handle_irq", "ax"
 s_unimplemented_int:
 //	        123456789012345678901

@@ -25,21 +25,21 @@
 	.intel_syntax noprefix
 
 #include "common.inc"
+#include "bank/bank_macros.inc"
 
-	.align 2
-irq_bank_handlers:
-	.word bank_set_map
-	.word bank_get_map
-	.word bank_read_byte
-	.word bank_write_byte
-	.word bank_read_word
-	.word bank_write_word
-	.word bank_read_block
-	.word bank_write_block
-	.word bank_fill_block
-	.word bank_erase_flash
-
-	.global irq_bank_handler
-irq_bank_handler:
-	m_irq_table_handler irq_bank_handlers, 10, (M_IRQ_PUSH_BX | M_IRQ_PUSH_CX | M_IRQ_PUSH_DX | M_IRQ_PUSH_SI | M_IRQ_PUSH_DI | M_IRQ_PUSH_DS | M_IRQ_PUSH_ES), error_handle_irq24
-	iret
+/**
+ * INT 18h AH=09h - bank_erase_flash
+ * Input:
+ * - BX = Bank ID
+ *   - 0000 ~ FFFF = ROM/Flash
+ */
+    .global bank_erase_flash
+bank_erase_flash:
+    push ax
+    mov al, 0xFF
+    or bh, 0x80
+    xor cx, cx
+    xor dx, dx
+    call bank_fill_block
+    pop ax
+    ret

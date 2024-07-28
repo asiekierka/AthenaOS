@@ -25,6 +25,20 @@ SRC_BIOS    += bios/timer/$(BIOS_TIMER_RTC)
 DEFINES     += -DBIOS_BANK_MAPPER_$(BIOS_BANK_MAPPER)
 DEFINES		+= -DBIOS_BANK_ROM_FORCE_COUNT=$(BIOS_BANK_ROM_FORCE_COUNT)
 
+ifeq ($(BIOS_BANK_MEMORY),rom)
+DEFINES		+= -DBIOS_BANK_MAPPER_NO_PORT_CE_SUPPORT
+endif
+ifeq ($(BIOS_BANK_MEMORY),ram_ce)
+DEFINES		+= -DBIOS_BANK_MAPPER_SIMPLE_RAM
+endif
+
+BIOS_BANK_MEMORY_IMPL := $(BIOS_BANK_MEMORY)
+ifneq ($(filter $(BIOS_BANK_MEMORY),rom rom_ce ram_ce),)
+BIOS_BANK_MEMORY_IMPL := simple
+endif
+
+SRC_BIOS    += bios/bank/$(BIOS_BANK_MEMORY_IMPL)
+
 # Tool paths
 # ----------
 

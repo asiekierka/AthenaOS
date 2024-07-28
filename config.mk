@@ -13,6 +13,16 @@
 
 # BIOS_BANK_MAPPER := 2001
 
+# Select the memory type used by the cartridge.
+# Defaults to read-only memory.
+#
+# Available options:
+# - rom - read-only memory, does not depend on 0xCE port support
+# - rom_ce - read-only memory, depends on 0xCE port support (slightly faster)
+# - ram_ce - read-write memory, depends on 0xCE port support
+
+# BIOS_BANK_MEMORY := rom
+
 # Force ROM banking to emulate a specified number of banks.
 # For WonderWitch compatibility on >512KB cartridges, set this value to 8.
 
