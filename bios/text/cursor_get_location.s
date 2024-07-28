@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 /**
  * INT 13h AH=13h - cursor_get_location

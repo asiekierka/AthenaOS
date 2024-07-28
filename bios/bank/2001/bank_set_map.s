@@ -24,23 +24,25 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 /**
- * INT 18h AH=01h - bank_get_map
+ * INT 18h AH=00h - bank_set_map
  * Input:
  * - BX = Bank
+ * - CX = Bank number
  * Output:
- * - AX = Bank number.
  */
-    .global bank_get_map
-bank_get_map:
-    xor ax, ax
+    .global bank_set_map
+bank_set_map:
+    push ax
+    mov ax, cx
     mov dx, bx
     xor dh, dh
     add dx, 0x00C1
     cmp dx, 0x00C3
     ja 1f
-    in al, dx
+    out dx, al
 1:
+    pop ax
     ret

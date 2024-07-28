@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 /**
  * INT 15h AH=0Bh - sound_get_sweep

@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 /**
  * INT 16h AH=09h - timer_get_count

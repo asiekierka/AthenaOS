@@ -9,15 +9,19 @@ include $(WONDERFUL_TOOLCHAIN)/target/$(TARGET)/makedefs.mk
 # Configuration
 # -------------
 
-NAME		:= Athena
-VERSION		:= 0.0.1
+include config.defaults.mk
+include config.mk
+CONFIG_FILES := config.defaults.mk config.mk
+
 NAME_BIOS	:= $(NAME)BIOS-$(VERSION)
 NAME_OS		:= $(NAME)OS-$(VERSION)
-SRC_BIOS	:= bios
+SRC_BIOS	:= bios bios/bank bios/comm bios/disp bios/key bios/sound bios/system bios/text bios/timer
 SRC_OS		:= os
 
-ANK_FONT	:= fonts/font_ank.png
-SJIS_FONT	:= fonts/misaki/misaki_gothic.png
+# Defines
+# -------
+
+SRC_BIOS    += bios/bank/$(BIOS_BANK_MAPPER)
 
 # Tool paths
 # ----------
@@ -59,10 +63,10 @@ endif
 # Source files
 # ------------
 
-SOURCES_BIOS_S	:= $(shell find -L $(SRC_BIOS) -name "*.s")
-SOURCES_BIOS_C	:= $(shell find -L $(SRC_BIOS) -name "*.c")
-SOURCES_OS_S	:= $(shell find -L $(SRC_OS) -name "*.s")
-SOURCES_OS_C	:= $(shell find -L $(SRC_OS) -name "*.c")
+SOURCES_BIOS_S	:= $(shell find -L $(SRC_BIOS) -maxdepth 1 -name "*.s")
+SOURCES_BIOS_C	:= $(shell find -L $(SRC_BIOS) -maxdepth 1 -name "*.c")
+SOURCES_OS_S	:= $(shell find -L $(SRC_OS)   -maxdepth 1 -name "*.s")
+SOURCES_OS_C	:= $(shell find -L $(SRC_OS)   -maxdepth 1 -name "*.c")
 
 # Compiler and linker flags
 # -------------------------
@@ -80,6 +84,9 @@ CFLAGS		+= -std=gnu11 $(WARNFLAGS) $(DEFINES) $(WF_ARCH_CFLAGS) \
 		   $(INCLUDEFLAGS) -ffunction-sections -fdata-sections -fno-common -Os
 
 LDFLAGS		:= $(LIBDIRSFLAGS) $(WF_ARCH_LDFLAGS) $(LIBS)
+
+CFLAGS_BIOS	:= -Ibios
+CFLAGS_OS	:= -Ios
 
 # Intermediate build files
 # ------------------------
@@ -122,15 +129,15 @@ $(RAW_OS): $(ELF_OS)
 	@$(MKDIR) -p $(@D)
 	$(_V)$(OBJCOPY) -O binary $< $@
 
-$(ELF_BIOS): $(OBJS_BIOS) $(SRC_BIOS)/link.ld
+$(ELF_BIOS): $(OBJS_BIOS) bios/link.ld
 	@echo "  LD      $@"
 	@$(MKDIR) -p $(@D)
-	$(_V)$(CC) -o $(ELF_BIOS) -T$(SRC_BIOS)/link.ld -Wl,-Map,$(MAP_BIOS) -Wl,--gc-sections $(OBJS_BIOS) $(LDFLAGS)
+	$(_V)$(CC) -o $(ELF_BIOS) -Tbios/link.ld -Wl,-Map,$(MAP_BIOS) -Wl,--gc-sections $(OBJS_BIOS) $(LDFLAGS)
 
-$(ELF_OS): $(OBJS_OS) $(SRC_OS)/link.ld
+$(ELF_OS): $(OBJS_OS) os/link.ld
 	@echo "  LD      $@"
 	@$(MKDIR) -p $(@D)
-	$(_V)$(CC) -o $(ELF_OS) -T$(SRC_OS)/link.ld -Wl,-Map,$(MAP_OS) -Wl,--gc-sections $(OBJS_OS) $(LDFLAGS)
+	$(_V)$(CC) -o $(ELF_OS) -Tos/link.ld -Wl,-Map,$(MAP_OS) -Wl,--gc-sections $(OBJS_OS) $(LDFLAGS)
 
 clean:
 	@echo "  CLEAN"
@@ -139,31 +146,41 @@ clean:
 # Rules
 # -----
 
-$(BUILDDIR)/fonts/font_ank_dat.o : $(ANK_FONT) tools/ank_font_pack.py
+$(BUILDDIR)/fonts/font_ank_dat.o : $(BIOS_FONT_ANK) tools/ank_font_pack.py $(CONFIG_FILES)
 	@echo "  FONT    $<"
 	@mkdir -p $(@D)
-	$(PYTHON) tools/ank_font_pack.py $(ANK_FONT) $(patsubst %_dat.o,%.dat,$@)
+	$(PYTHON) tools/ank_font_pack.py $(BIOS_FONT_ANK) $(patsubst %_dat.o,%.dat,$@)
 	@echo "  BIN2S   $(patsubst %_dat.o,%.dat,$@)"
 	$(_V)$(BIN2S) --section ".text" $(@D) $(patsubst %_dat.o,%.dat,$@)
 	$(_V)$(CC) $(ASFLAGS) -c -o $@ $(patsubst %.o,%.s,$@)
 
-$(BUILDDIR)/fonts/font_sjis_dat.o : $(SJIS_FONT) tools/sjis_font_pack.py
+$(BUILDDIR)/fonts/font_sjis_dat.o : $(BIOS_FONT_SJIS) tools/sjis_font_pack.py $(CONFIG_FILES)
 	@echo "  FONT    $<"
 	@mkdir -p $(@D)
-	$(PYTHON) tools/sjis_font_pack.py $(SJIS_FONT) $(patsubst %_dat.o,%.dat,$@)
+	$(PYTHON) tools/sjis_font_pack.py $(BIOS_FONT_SJIS) $(patsubst %_dat.o,%.dat,$@)
 	@echo "  BIN2S   $(patsubst %_dat.o,%.dat,$@)"
 	$(_V)$(BIN2S) --section ".text" $(@D) $(patsubst %_dat.o,%.dat,$@)
 	$(_V)$(CC) $(ASFLAGS) -c -o $@ $(patsubst %.o,%.s,$@)
 
-$(BUILDDIR)/%.s.o : %.s
+$(BUILDDIR)/bios/%.s.o : bios/%.s $(CONFIG_FILES)
 	@echo "  AS      $<"
 	@$(MKDIR) -p $(@D)
-	$(_V)$(CC) $(ASFLAGS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
+	$(_V)$(CC) $(ASFLAGS) $(CFLAGS_BIOS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
 
-$(BUILDDIR)/%.c.o : %.c
+$(BUILDDIR)/bios/%.c.o : bios/%.c $(CONFIG_FILES)
 	@echo "  CC      $<"
 	@$(MKDIR) -p $(@D)
-	$(_V)$(CC) $(CFLAGS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
+	$(_V)$(CC) $(CFLAGS) $(CFLAGS_BIOS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
+
+$(BUILDDIR)/os/%.s.o : os/%.s $(CONFIG_FILES)
+	@echo "  AS      $<"
+	@$(MKDIR) -p $(@D)
+	$(_V)$(CC) $(ASFLAGS) $(CFLAGS_OS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
+
+$(BUILDDIR)/os/%.c.o : os/%.c $(CONFIG_FILES)
+	@echo "  CC      $<"
+	@$(MKDIR) -p $(@D)
+	$(_V)$(CC) $(CFLAGS) $(CFLAGS_OS) -MMD -MP -MJ $(patsubst %.o,%.cc.json,$@) -c -o $@ $<
 
 # Include dependency files if they exist
 # --------------------------------------

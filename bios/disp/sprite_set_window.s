@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 /**
  * INT 12h AH=17h - sprite_set_window

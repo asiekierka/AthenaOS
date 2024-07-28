@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 	// Input: AL = screen ID
 	// Output: DI = VRAM location

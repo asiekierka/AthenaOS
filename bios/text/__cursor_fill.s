@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
     // DL = color (0-15)
     // clobbers AX, BX, CX, DX

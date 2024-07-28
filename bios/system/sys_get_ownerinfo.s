@@ -24,7 +24,7 @@
 	.code16
 	.intel_syntax noprefix
 
-#include "../common.inc"
+#include "common.inc"
 
 owner_name_to_ascii_table:
     .ascii " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"

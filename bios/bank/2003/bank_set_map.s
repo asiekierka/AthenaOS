@@ -27,13 +27,23 @@
 #include "common.inc"
 
 /**
- * INT 13h AH=0Fh - text_get_screen
+ * INT 18h AH=00h - bank_set_map
  * Input:
+ * - BX = Bank
+ * - CX = Bank number
  * Output:
- * - AL = Screen ID
  */
-    .global text_get_screen
-text_get_screen:
-    xor ax, ax
-    ss mov al, [text_screen]
+    .global bank_set_map
+bank_set_map:
+    push ax
+    mov ax, cx
+    mov dx, bx
+    xor dh, dh
+    add dx, dx
+    add dx, 0x00D0
+    cmp dx, 0x00D6
+    ja 1f
+    out dx, ax
+1:
+    pop ax
     ret

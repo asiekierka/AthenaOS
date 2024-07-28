@@ -20,8 +20,11 @@
  * SOFTWARE.
  */
 
+#ifndef __ASSEMBLER__
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#endif
+
 #include <wonderful.h>
 #include <ws.h>
