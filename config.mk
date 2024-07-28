@@ -13,6 +13,13 @@
 
 # BIOS_BANK_MAPPER := 2001
 
+# Select the RTC provided by the cartridge.
+#
+# Available options:
+# - none - no RTC provided, emulation stub used instead
+
+# BIOS_TIMER_RTC := none
+
 # == BIOS / Fonts ==
 
 # Select the default ASCII font used by the cartridge.

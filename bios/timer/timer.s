@@ -33,8 +33,8 @@ irq_timer_handlers:
 	.word rtc_get_datetime
 	.word rtc_set_datetime_struct
 	.word rtc_get_datetime_struct
-	.word error_handle_irq22 // TODO: rtc_enable_alarm
-	.word error_handle_irq22 // TODO: rtc_disable_alarm
+	.word rtc_enable_alarm
+	.word rtc_disable_alarm
 	.word timer_enable
 	.word timer_disable
 	.word timer_get_count

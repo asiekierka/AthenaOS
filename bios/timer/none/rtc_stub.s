@@ -59,7 +59,7 @@ rtc_get_datetime:
 /**
  * INT 16h AH=03h - rtc_set_datetime_struct
  * Input:
- * - DS:DX - Input data structure
+ * - DS:DX = Input data structure
  */
     .global rtc_set_datetime_struct
 rtc_set_datetime_struct:
@@ -85,7 +85,7 @@ rtc_set_datetime_struct:
 /**
  * INT 16h AH=04h - rtc_get_datetime_struct
  * Input:
- * - DS:DX - Output data structure
+ * - DS:DX = Output data structure
  */
     .global rtc_get_datetime_struct
 rtc_get_datetime_struct:
@@ -110,6 +110,29 @@ rtc_get_datetime_struct:
     pop ds
     pop di
     pop si
+
+    // Fall through to RET
+
+/**
+ * INT 16h AH=05h - rtc_enable_alarm
+ * Input:
+ * - BL = Alarm hour
+ * - BH = Alarm minute
+ * Output:
+ */
+    .global rtc_enable_alarm
+rtc_enable_alarm:
+    // Fall through to RET
+
+/**
+ * INT 16h AH=06h - rtc_disable_alarm
+ * Input:
+ * Output:
+ */
+    .global rtc_disable_alarm
+rtc_disable_alarm:
+    // Fall through to RET
+
     ret
 
     .section ".data"

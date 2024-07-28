@@ -22,6 +22,7 @@ SRC_OS		:= os
 # -------
 
 SRC_BIOS    += bios/bank/$(BIOS_BANK_MAPPER)
+SRC_BIOS    += bios/timer/$(BIOS_TIMER_RTC)
 
 # Tool paths
 # ----------
