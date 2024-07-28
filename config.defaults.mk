@@ -2,6 +2,7 @@
 # Do not change this file! Change config.mk instead.
 
 BIOS_BANK_MAPPER := 2001
+BIOS_BANK_ROM_FORCE_COUNT := 0
 BIOS_TIMER_RTC := none
 
 NAME := Athena

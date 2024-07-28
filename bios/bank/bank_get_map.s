@@ -25,6 +25,7 @@
 	.intel_syntax noprefix
 
 #include "common.inc"
+#include "bank/bank_macros.inc"
 
 /**
  * INT 18h AH=01h - bank_get_map
@@ -35,12 +36,11 @@
  */
     .global bank_get_map
 bank_get_map:
+    xor ax, ax
     mov dx, bx
-    xor dh, dh
-    add dx, dx
-    add dx, 0x00D0
-    cmp dx, 0x00D6
-    ja 1f
-    in ax, dx
+    bank_map_dx
+    bank_map_read_ax_dx
+    bank_adjust_wraparound_get_map bl, ax
 1:
     ret
+

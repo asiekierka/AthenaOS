@@ -42,7 +42,34 @@ footer:
 	.byte 1 // Color
 	.byte 0 // Game ID
 	.byte 0x80 // Game version
-	.byte 2 // ROM size
+
+	// ROM size (derived from BIOS_BANK_ROM_FORCE_COUNT)
+#if BIOS_BANK_ROM_FORCE_COUNT == 1024
+	.byte 11
+#elif BIOS_BANK_ROM_FORCE_COUNT == 512
+	.byte 10
+#elif BIOS_BANK_ROM_FORCE_COUNT == 256
+	.byte 9
+#elif BIOS_BANK_ROM_FORCE_COUNT == 128
+	.byte 8
+#elif BIOS_BANK_ROM_FORCE_COUNT == 64
+	.byte 6
+#elif BIOS_BANK_ROM_FORCE_COUNT == 32
+	.byte 4
+#elif BIOS_BANK_ROM_FORCE_COUNT == 16
+	.byte 3
+#elif BIOS_BANK_ROM_FORCE_COUNT == 8
+	.byte 2
+#elif BIOS_BANK_ROM_FORCE_COUNT == 4
+	.byte 1
+#elif BIOS_BANK_ROM_FORCE_COUNT == 1
+	.byte 0
+#elif BIOS_BANK_ROM_FORCE_COUNT == 0
+	.byte 2 // Default - 512 KB
+#else
+# error Unsupported ROM bank count!
+#endif
+
 	.byte 4 // RAM size
 	.byte 4 // Flags
 	.byte 1 // Mapper

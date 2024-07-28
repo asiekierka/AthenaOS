@@ -13,6 +13,11 @@
 
 # BIOS_BANK_MAPPER := 2001
 
+# Force ROM banking to emulate a specified number of banks.
+# For WonderWitch compatibility on >512KB cartridges, set this value to 8.
+
+# BIOS_BANK_ROM_FORCE_COUNT := 0
+
 # Select the RTC provided by the cartridge.
 #
 # Available options:

@@ -25,6 +25,7 @@
 	.intel_syntax noprefix
 
 #include "common.inc"
+#include "bank/bank_macros.inc"
 
 /**
  * INT 18h AH=00h - bank_set_map
@@ -37,12 +38,10 @@
 bank_set_map:
     push ax
     mov ax, cx
+    bank_adjust_wraparound_set_map bl, ax
     mov dx, bx
-    xor dh, dh
-    add dx, 0x00C1
-    cmp dx, 0x00C3
-    ja 1f
-    out dx, al
+    bank_map_dx
+    bank_map_write_ax_dx
 1:
     pop ax
     ret

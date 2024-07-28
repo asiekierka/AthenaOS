@@ -21,8 +21,9 @@ SRC_OS		:= os
 # Defines
 # -------
 
-SRC_BIOS    += bios/bank/$(BIOS_BANK_MAPPER)
 SRC_BIOS    += bios/timer/$(BIOS_TIMER_RTC)
+DEFINES     += -DBIOS_BANK_MAPPER_$(BIOS_BANK_MAPPER)
+DEFINES		+= -DBIOS_BANK_ROM_FORCE_COUNT=$(BIOS_BANK_ROM_FORCE_COUNT)
 
 # Tool paths
 # ----------
