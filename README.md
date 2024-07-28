@@ -34,6 +34,10 @@ PS. If you just want to play Judgement Silversword, that one is available [on St
 * GNU Make
   * Windows/MSYS2: `pacman -S make`
 
+### Configuration
+
+Build settings can be configured by editing `config.mk`.
+
 ### Build steps
 
     $ make
