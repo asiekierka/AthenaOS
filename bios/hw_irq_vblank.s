@@ -71,7 +71,7 @@ hw_irq_vblank_handler:
     and ax, cx
     // AX = keys pressed
     // CX = keys held
-    mov word ptr [keys_pressed], ax
+    or word ptr [keys_pressed], ax
     mov word ptr [keys_held], cx
     // Process repeat:
     // - If new key pressed, reset timer to delay
@@ -96,7 +96,7 @@ hw_irq_vblank_handler:
     // Set pressed keys to held keys
     mov ax, cx
 2:
-    mov word ptr [keys_pressed_repeat], ax
+    or word ptr [keys_pressed_repeat], ax
 
     // === CURSOR HANDLER ===
     // AL = mode, AH = counter
