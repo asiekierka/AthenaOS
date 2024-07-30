@@ -34,7 +34,6 @@
  */
     .global key_wait
 key_wait:
-    pushf
 1:
     sti
     ss mov ax, [keys_pressed]

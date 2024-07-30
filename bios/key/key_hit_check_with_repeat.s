@@ -34,7 +34,6 @@
  */
     .global key_hit_check_with_repeat
 key_hit_check_with_repeat:
-    pushf
     cli // Disable interrupts to make the keys_pressed access atomic
     ss mov ax, [keys_pressed_repeat]
     jmp __key_clear_pressed

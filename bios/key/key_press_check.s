@@ -34,7 +34,6 @@
  */
     .global key_press_check
 key_press_check:
-    pushf
     cli // Disable interrupts to make the keys_pressed access atomic
     ss mov ax, [keys_held]
     .global __key_clear_pressed
@@ -42,5 +41,4 @@ __key_clear_pressed:
     xor bp, bp
     ss mov word ptr [keys_pressed], bp
     ss mov word ptr [keys_pressed_repeat], bp
-    popf
     ret

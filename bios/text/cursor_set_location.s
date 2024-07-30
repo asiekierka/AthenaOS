@@ -37,9 +37,6 @@
  */
     .global cursor_set_location
 cursor_set_location:
-    pushf
-    cli // Interrupt guard - avoid a race condition between the VBlank IRQ and cursor change
-    
     pusha
     // Clear previous cursor location
     ss mov dl, [text_color]
@@ -51,6 +48,4 @@ cursor_set_location:
     // Set new cursor location
     ss mov [text_cursor_x], bx
     ss mov [text_cursor_w], cx
-    popf
-
     ret
