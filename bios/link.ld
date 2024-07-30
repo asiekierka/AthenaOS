@@ -8,49 +8,51 @@ SECTIONS
 	/* segelf segment start markers for target text section. */
 	".text!" 0xF0000 (NOLOAD) :
 	{
-		"__stext!" = .;
+		"__text_start!" = .;
 		KEEP(*(".header!"))
 		KEEP(*(".start!"))
 		*(".text!*" ".text.*!")
 		*(".fartext!*" ".fartext.*!")
 		*(".farrodata!*" ".farrodata.*!")
-		"__etext!" = .;
+		"__text_end!" = .;
 	}
 
 	/* Target text section. */
 	.text 0xF0000 :
 	{
-		__stext = .;
+		__text_start = .;
 		KEEP(*(".header"))
 		KEEP(*(".start"))
 		*(.text ".text.*[^&]")
 		*(".fartext.*[^&]")
 		*(".farrodata.*[^&]")
-		__etext = .;
+		__text_end = .;
 	}
 
 	/* segelf segment end markers for target text section. */
 	".text&" . (NOLOAD) :
 	{
-		"__stext&" = .;
+		"__text_start&" = .;
 		KEEP(*(".header&"))
 		KEEP(*(".start&"))
 		*(".text&*" ".text.*&")
 		*(".fartext&*" ".fartext.*&")
 		*(".farrodata&*" ".farrodata.*&")
-		"__etext&" = .;
+		"__text_end&" = .;
 		. = ALIGN (16);
 	}
 
 	/* segelf segment start markers for target data section. */
 	".data!" 0x00000 (NOLOAD) : AT(ADDR(".text") + SIZEOF(".text"))
 	{
-		"__sdata!" = .;
+		"__data_start!" = .;
 		*(".rodata!*" ".rodata.*!")
 		*(".data!*" ".data.*!")
 		*(".bss!*" ".bss.*!")
-		"__edata!" = .;
-		"__ebss!" = .;
+		"__data_end!" = .;
+		"__bss_end!" = .;
+		"__heap_start!" = .;
+		"__heap_end!" = .;
 	}
 
 	. = __reserved_irq_vectors * 4;
@@ -58,38 +60,43 @@ SECTIONS
 	/* Target data section. */
 	.data . : AT(ADDR(".text") + SIZEOF(".text"))
 	{
-		__sdata = .;
+		__data_start = .;
 		*(.rodata ".rodata.*[^&]")
 		*(.data ".data.*[^&]")
 		. = ALIGN (2);
-		__edata = .;
+		__data_end = .;
 	}
-	"__ldata!" = 0;
-	__ldata = SIZEOF(.data);
-	"__lwdata!" = 0;
-	__lwdata = (__ldata + 1) / 2;
+	"__data_length!" = 0;
+	__data_length = SIZEOF(.data);
+	"__data_length_words!" = 0;
+	__data_length_words = (__data_length + 1) / 2;
 
 	/* Target BSS section, with same segment bases as data section. */
 	.bss . (NOLOAD) :
 	{
 		*(.bss ".bss.*[^&]")
 		. = ALIGN (2);
-		__ebss = .;
+		__bss_end = .;
+		__heap_start = .;
 	}
-	"__lbss!" = 0;
-	__lbss = SIZEOF(.bss);
-	"__lwbss!" = 0;
-	__lwbss = (__lbss + 1) / 2;
+	"__bss_length!" = 0;
+	__bss_length = SIZEOF(.bss);
+	"__bss_length_words!" = 0;
+	__bss_length_words = (__bss_length + 1) / 2;
+
+	__heap_end = 0x00E00;
+	"__heap_length!" = 0;
+	__heap_length = __heap_end - __heap_start - 4;
 
 	/* segelf segment end markers for target data section. */
 	".data&" . (NOLOAD) :
 	{
-		"__sdata&" = .;
+		"__data_start&" = .;
 		*(".rodata&*" ".rodata.*&")
 		*(".data&*" ".data.*&")
 		*(".bss&*" ".bss.*&")
-		"__edata&" = .;
-		"__ebss& " = .;
+		"__data_end&" = .;
+		"__bss_end& " = .;
 	}
 
 	/* ROM footer */

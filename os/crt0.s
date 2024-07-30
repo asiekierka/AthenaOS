@@ -37,11 +37,11 @@ _start:
 	// initialize data/BSS
 	push cs
 	pop ds
-	mov si, offset "__etext"
-	mov di, offset "__sdata"
-	mov cx, offset "__lwdata"
+	mov si, offset "__text_end"
+	mov di, offset "__data_start"
+	mov cx, offset "__data_length_words"
 	rep movsw
-	mov cx, offset "__lwbss"
+	mov cx, offset "__bss_length_words"
 	xor ax, ax
 	rep stosw
 

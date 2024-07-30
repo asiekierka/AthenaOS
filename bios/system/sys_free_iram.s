@@ -26,32 +26,13 @@
 
 #include "common.inc"
 
-	.align 2
-irq_system_handlers:
-	.word sys_interrupt_set_hook
-	.word sys_interrupt_reset_hook
-    .word sys_wait
-    .word sys_get_tick_count
-    .word error_handle_irq23 // TODO: sys_sleep
-    .word error_handle_irq23 // TODO: sys_set_sleep_time
-    .word error_handle_irq23 // TODO: sys_get_sleep_time
-    .word error_handle_irq23 // TODO: sys_set_awake_key
-    .word error_handle_irq23 // TODO: sys_get_awake_key
-    .word error_handle_irq23 // TODO: sys_set_keepalive_int
-    .word sys_get_ownerinfo
-    .word error_handle_irq23 // TODO: sys_suspend
-    .word error_handle_irq23 // TODO: sys_resume
-    .word error_handle_irq23 // TODO: sys_set_remote
-    .word error_handle_irq23 // TODO: sys_get_remote
-    .word sys_alloc_iram
-    .word sys_free_iram
-    .word sys_get_my_iram
-    .word sys_get_version
-    .word error_handle_irq23 // TODO: sys_swap
-    .word error_handle_irq23 // TODO: sys_set_resume
-    .word error_handle_irq23 // TODO: sys_get_resume
-
-	.global irq_system_handler
-irq_system_handler:
-	m_irq_table_handler irq_system_handlers, 22, 0, error_handle_irq23
-	iret
+/**
+ * INT 17h AH=10h - sys_free_iram
+ * Input:
+ * - BX = Address of memory to be released.
+ * Output:
+ */
+    .global sys_free_iram
+sys_free_iram:
+    ss mov word ptr [bx - 4], 0xFFFF
+    ret

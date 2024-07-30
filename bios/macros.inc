@@ -32,6 +32,13 @@
 	.word \address\(), 0xF000
 .endm
 
+// Default IRQ table handler stack offset.
+// Does not include M_IRQ_PUSH_* flags.
+#define IRQ_TABLE_HANDLER_STACK_OFFSET 4
+#define IRQ_TABLE_HANDLER_IP_OFFSET (IRQ_TABLE_HANDLER_STACK_OFFSET)
+#define IRQ_TABLE_HANDLER_CS_OFFSET ((IRQ_TABLE_HANDLER_STACK_OFFSET) + 2)
+#define IRQ_TABLE_HANDLER_FLAGS_OFFSET ((IRQ_TABLE_HANDLER_STACK_OFFSET) + 4)
+
 /**
  * Create an IRQ table handler.
  *
