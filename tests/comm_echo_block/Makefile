@@ -4,6 +4,5 @@
 
 NAME			:= comm_echo_block
 WW_MEMORY_LAYOUT	:= asc1
-CFLAGS			:= -O0
 
 include ../Makefile.base

@@ -4,6 +4,5 @@
 
 NAME			:= text_ank_sjis
 WW_MEMORY_LAYOUT	:= jpn1
-CFLAGS			:= -O0
 
 include ../Makefile.base
