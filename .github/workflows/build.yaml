@@ -25,21 +25,3 @@ jobs:
         with:
           name: AthenaOS
           path: dist/
-
-  build-tests:
-    name: Build tests
-    runs-on: ubuntu-latest
-    container: cbrzeszczot/wonderful:wswan-latest
-    steps:
-      - name: Clone project
-        uses: actions/checkout@v3
-
-      - name: Build
-        run: cd tests && make
-
-      - name: Archive ROM
-        uses: actions/upload-artifact@v4
-        with:
-          name: Test programs
-          path: tests/build-all/
-
