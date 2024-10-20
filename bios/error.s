@@ -38,7 +38,9 @@ error_handle_print_reg_names_row:
 	mov cx, 2
 	mov ax, 0x0605
 1:
+	push ax
 	int 0x13
+	pop ax
 	add bl, 5
 	add dx, 2
 	dec al
@@ -52,7 +54,9 @@ error_handle_print_num_row:
 1:
 	sub bp, 2
 	mov dx, [bp]
+	push ax
 	int 0x13
+	pop ax
 	add bl, 5
 	cmp bl, 22
 	jbe 1b
@@ -99,9 +103,9 @@ error_handle_start:
 	mov ax, 0x0200 // Set mode to 0 (ASCII)
 	xor bx, bx
 	int 0x13
-	mov ah, 0x09 // Set palette to 0
+	mov ax, 0x0900 // Set palette to 0
 	int 0x13
-	mov ah, 0x0E // Set screen to 0
+	mov ax, 0x0E00 // Set screen to 0
 	int 0x13
 	xor ax, ax // Initialize screen
 	int 0x13
