@@ -2,8 +2,7 @@ OUTPUT_FORMAT("elf32-i386")
 ENTRY(_start)
 SECTIONS
 {
-	/* Reserve 64 IRQ vectors in RAM */
-	__reserved_irq_vectors = 64;
+	__reserved_iram_bytes = 0x1C0;
 
 	/* segelf segment start markers for target text section. */
 	".text!" 0xF0000 (NOLOAD) :
@@ -55,7 +54,7 @@ SECTIONS
 		"__heap_end!" = .;
 	}
 
-	. = __reserved_irq_vectors * 4;
+	. = __reserved_iram_bytes;
 
 	/* Target data section. */
 	.data . : AT(ADDR(".text") + SIZEOF(".text"))
@@ -104,6 +103,9 @@ SECTIONS
 	{
 		KEEP(*(.footer))
 	}
+
+	"__bank_write_fill_block_flash_ram_size!" = 0;
+	"__bank_erase_flash_ram_size!" = 0;
 
     /* Temporary workaround for avoiding debug relocation problems */
 

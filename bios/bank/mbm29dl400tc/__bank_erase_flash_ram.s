@@ -28,26 +28,38 @@
 #include "bank/bank_macros.inc"
 
 /**
- * INT 18h AH=03h - bank_write_byte
  * Input:
- * - BX = Bank ID
- *   - 0000 ~ 7FFF = SRAM
- *   - 8000 ~ FFFF = ROM/Flash
- * - CL = Byte to write
- * - DX = Address within bank
- * Output:
+ * - BX = bank ID (8000 ~ FFFF)
  */
-    .global bank_write_byte
-bank_write_byte:
-    push ax
-#ifndef BIOS_BANK_MAPPER_SIMPLE_RAM
-    test bh, 0x80
-    jnz error_handle_write_to_rom
-#endif
-    mov di, dx
-    bank_rw_bx_to_segment_start ds
-    mov [di], cl
-    bank_rw_bx_to_segment_end_unsafe
-    pop ax
-    ret
+	.section ".text"
+    .global __bank_erase_flash_ram
+__bank_erase_flash_ram:
+	bank_rw_bx_to_sram_segment_start ds
 
+	mov bx, 0xAAA
+	mov si, 0x555
+
+	mov byte ptr [bx], 0xAA
+	mov byte ptr [si], 0x55
+	mov byte ptr [bx], 0x80
+	mov byte ptr [bx], 0xAA
+	mov byte ptr [si], 0x55
+	xor bx, bx
+	mov byte ptr [bx], 0x30
+
+1:
+	nop
+	nop
+	nop
+	mov al, byte [bx]
+	nop
+	nop
+	nop
+	cmp al, byte [bx] // DQ2 and/or DQ6 toggles if status register
+	jne 1b
+
+	bank_rw_bx_to_sram_segment_end
+	retf
+    
+    .global __bank_erase_flash_ram_size
+__bank_erase_flash_ram_size = . - __bank_erase_flash_ram

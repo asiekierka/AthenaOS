@@ -20,23 +20,47 @@
  * SOFTWARE.
  */
 
-#include <wonderful.h>
-#include <ws.h>
-#include "macros.inc"
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-// Memory map
-/// Wavetable memory location (64 bytes, aligned).
-#define MEM_WAVETABLE 0x180
-/// Default top of stack - the smallest top of stack of all memory modes (ASC1/ASC2/JPN1/JPN2).
-#define MEM_STACK_TOP 0xE00
+#include "common.inc"
+#include "bank/bank_macros.inc"
 
-#define ANK_SCREEN_TILES  128
-#define SJIS_SCREEN_TILES (28 * 18)
-#define TEXT_MODE_ANK 0
-#define TEXT_MODE_ANK_SJIS 1
-#define TEXT_MODE_SJIS 2
+/**
+ * INT 18h AH=03h - bank_write_byte
+ * Input:
+ * - BX = Bank ID
+ *   - 0000 ~ 7FFF = SRAM
+ *   - 8000 ~ FFFF = ROM/Flash
+ * - CL = Byte to write
+ * - DX = Address within bank
+ * Output:
+ */
+    .global bank_write_byte
+bank_write_byte:
+    push ax
+#if defined(BIOS_BANK_MAPPER_SIMPLE_ROM)
+    test bh, 0x80
+    jnz error_handle_write_to_rom
+#elif !defined(BIOS_BANK_MAPPER_SIMPLE_RAM)
+    test bh, 0x80
+    jz 1f
 
-#define BIOS_VERSION_MAJOR 1
-#define BIOS_VERSION_MINOR 9
-#define BIOS_VERSION_PATCH 99
-#define BIOS_VERSION (((BIOS_VERSION_MAJOR) << 12) | ((BIOS_VERSION_MINOR) << 8) | (BIOS_VERSION_PATCH))
+    // Route to bank_write_block
+    pop ax
+    push cx
+    mov cx, 1
+    mov si, sp
+    push ss
+    pop ds
+    jmp bank_write_block
+1:
+#endif
+    mov di, dx
+    bank_rw_bx_to_segment_start ds
+    mov [di], cl
+    bank_rw_bx_to_segment_end_unsafe
+    pop ax
+    ret
+

@@ -27,36 +27,8 @@
 #include "common.inc"
 #include "bank/bank_macros.inc"
 
-/**
- * INT 18h AH=08h - bank_fill_block
- * Input:
- * - AL = Fill value
- * - BX = Bank ID
- *   - 0000 ~ 7FFF = SRAM
- *   - 8000 ~ FFFF = ROM/Flash
- * - CX = Bytes to write (0 treated as 65536)
- * - DX = Address within bank
- */
-    .global bank_fill_block
-bank_fill_block:
-#ifndef BIOS_BANK_MAPPER_SIMPLE_RAM
-    test bh, 0x80
-    jnz error_handle_write_to_rom
-#endif
-    push ax
-    mov di, dx
-    mov si, ax
-    bank_rw_bx_to_segment_start es
-    mov ax, si
-    mov ah, al
-    dec cx
-    shr cx, 1
-    rep stosw
-    jnc 1f
-    stosb
-1:
-    stosb
-    bank_rw_bx_to_segment_end_unsafe
-    pop ax
-    ret
-
+    .global __bank_write_fill_block_flash
+__bank_write_fill_block_flash:
+    mov bp, offset __bank_write_fill_block_flash_ram_size
+    mov di, offset __bank_write_fill_block_flash_ram
+    jmp __call_to_ram

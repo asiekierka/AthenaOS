@@ -20,23 +20,37 @@
  * SOFTWARE.
  */
 
-#include <wonderful.h>
-#include <ws.h>
-#include "macros.inc"
+	.arch	i186
+	.code16
+	.intel_syntax noprefix
 
-// Memory map
-/// Wavetable memory location (64 bytes, aligned).
-#define MEM_WAVETABLE 0x180
-/// Default top of stack - the smallest top of stack of all memory modes (ASC1/ASC2/JPN1/JPN2).
-#define MEM_STACK_TOP 0xE00
+#include "common.inc"
+#include "bank/bank_macros.inc"
 
-#define ANK_SCREEN_TILES  128
-#define SJIS_SCREEN_TILES (28 * 18)
-#define TEXT_MODE_ANK 0
-#define TEXT_MODE_ANK_SJIS 1
-#define TEXT_MODE_SJIS 2
-
-#define BIOS_VERSION_MAJOR 1
-#define BIOS_VERSION_MINOR 9
-#define BIOS_VERSION_PATCH 99
-#define BIOS_VERSION (((BIOS_VERSION_MAJOR) << 12) | ((BIOS_VERSION_MINOR) << 8) | (BIOS_VERSION_PATCH))
+/**
+ * INT 18h AH=09h - bank_erase_flash
+ * Input:
+ * - BX = Bank ID
+ *   - 0000 ~ FFFF = ROM/Flash
+ */
+    .global bank_erase_flash
+bank_erase_flash:
+#if defined(BIOS_BANK_MAPPER_SIMPLE_ROM)
+    jmp error_handle_write_to_rom
+#else
+#if defined(BIOS_BANK_MAPPER_SIMPLE_RAM)
+    mov al, 0xFF
+    or bh, 0x80
+    xor cx, cx
+    xor dx, dx
+    call bank_fill_block
+#else
+    bank_rw_bx_to_segment_start es
+    mov bp, offset __bank_erase_flash_ram_size
+    mov di, offset __bank_erase_flash_ram
+    call __call_to_ram
+    bank_rw_bx_to_segment_end_unsafe
+#endif
+    xor ax, ax
+    ret
+#endif

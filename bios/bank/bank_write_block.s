@@ -39,20 +39,27 @@
  */
     .global bank_write_block
 bank_write_block:
-    push ax
-#ifndef BIOS_BANK_MAPPER_SIMPLE_RAM
+    bank_rw_bx_to_segment_start es
+#if defined(BIOS_BANK_MAPPER_SIMPLE_ROM)
     test bh, 0x80
     jnz error_handle_write_to_rom
+#elif !defined(BIOS_BANK_MAPPER_SIMPLE_RAM)
+    test bh, 0x80
+    jz 1f
+
+    mov ah, 0
+    call __bank_write_fill_block_flash
+    jmp 2f
+1:
 #endif
     mov di, dx
-    bank_rw_bx_to_segment_start es
     shr cx, 1
     cld
     rep movsw
-    jnc 1f
+    jnc 2f
     movsb
-1:
+2:
     bank_rw_bx_to_segment_end_unsafe
-    pop ax
+    xor ax, ax
     ret
 

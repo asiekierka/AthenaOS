@@ -28,26 +28,72 @@
 #include "bank/bank_macros.inc"
 
 /**
- * INT 18h AH=05h - bank_write_word
  * Input:
- * - BX = Bank ID
- *   - 0000 ~ 7FFF = SRAM
- *   - 8000 ~ FFFF = ROM/Flash
- * - CX = Word to write
- * - DX = Address within bank
- * Output:
+ * - AH = 0 if write, 1 if fill
+ * - AL = fill value
+ * - BX = bank ID (8000 ~ FFFF)
+ * - CX = bytes to write
+ * - DX = address within bank
+ * - DS:SI = input buffer
  */
-    .global bank_write_word
-bank_write_word:
-    push ax
-#ifndef BIOS_BANK_MAPPER_SIMPLE_RAM
-    test bh, 0x80
-    jnz error_handle_write_to_rom
-#endif
-    mov di, dx
-    bank_rw_bx_to_segment_start ds
-    mov [di], cx
-    bank_rw_bx_to_segment_end_unsafe
-    pop ax
-    ret
+	.section ".text"
+    .global __bank_write_fill_block_flash_ram
+__bank_write_fill_block_flash_ram:
+	push ax
+	bank_rw_bx_to_sram_segment_start es
+	pop ax
+	mov di, dx
 
+	mov bx, 0xAAA
+
+	mov byte ptr es:[bx], 0xAA
+	mov byte ptr es:[0x555], 0x55
+	mov byte ptr es:[bx], 0x20
+
+	cld
+	
+	test ah, ah
+	jz __bank_write_block_flash_ram
+	call __bank_fill_block_flash_ram
+	jmp 9f
+	
+__bank_write_block_flash_ram:
+1:
+	mov byte ptr es:[di], 0xA0
+2:
+	movsb
+3:
+	nop
+	nop
+	mov al, byte ptr es:[di]
+	nop
+	nop
+	cmp al, byte ptr es:[di]
+	jne 3b
+	loop 1b
+
+9:
+	mov byte ptr es:[di], 0x90
+	mov byte ptr es:[di], 0xF0
+
+	bank_rw_bx_to_sram_segment_end
+	retf
+
+__bank_fill_block_flash_ram:
+1:
+	mov byte ptr es:[di], 0xA0
+2:
+	stosb
+3:
+	nop
+	nop
+	mov ah, byte ptr es:[di]
+	nop
+	nop
+	cmp ah, byte ptr es:[di]
+	jne 3b
+	loop 1b
+	ret
+    
+    .global __bank_write_fill_block_flash_ram_size
+__bank_write_fill_block_flash_ram_size = . - __bank_write_fill_block_flash_ram

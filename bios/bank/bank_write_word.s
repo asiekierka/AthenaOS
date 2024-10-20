@@ -28,18 +28,39 @@
 #include "bank/bank_macros.inc"
 
 /**
- * INT 18h AH=09h - bank_erase_flash
+ * INT 18h AH=05h - bank_write_word
  * Input:
  * - BX = Bank ID
- *   - 0000 ~ FFFF = ROM/Flash
+ *   - 0000 ~ 7FFF = SRAM
+ *   - 8000 ~ FFFF = ROM/Flash
+ * - CX = Word to write
+ * - DX = Address within bank
+ * Output:
  */
-    .global bank_erase_flash
-bank_erase_flash:
+    .global bank_write_word
+bank_write_word:
     push ax
-    mov al, 0xFF
-    or bh, 0x80
-    xor cx, cx
-    xor dx, dx
-    call bank_fill_block
+#if defined(BIOS_BANK_MAPPER_SIMPLE_ROM)
+    test bh, 0x80
+    jnz error_handle_write_to_rom
+#elif !defined(BIOS_BANK_MAPPER_SIMPLE_RAM)
+    test bh, 0x80
+    jz 1f
+
+    // Route to bank_write_block
+    pop ax
+    push cx
+    mov cx, 2
+    mov si, sp
+    push ss
+    pop ds
+    jmp bank_write_block
+1:
+#endif
+    mov di, dx
+    bank_rw_bx_to_segment_start ds
+    mov [di], cx
+    bank_rw_bx_to_segment_end_unsafe
     pop ax
     ret
+

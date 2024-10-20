@@ -15,7 +15,7 @@ CONFIG_FILES := config.defaults.mk config.mk
 
 NAME_BIOS	:= $(NAME)BIOS-$(VERSION)
 NAME_OS		:= $(NAME)OS-$(VERSION)
-SRC_BIOS	:= bios bios/bank bios/comm bios/disp bios/key bios/sound bios/system bios/text bios/timer
+SRC_BIOS	:= bios bios/bank bios/comm bios/disp bios/key bios/sound bios/system bios/text bios/timer bios/util
 SRC_OS		:= os
 
 # Defines
@@ -25,16 +25,18 @@ SRC_BIOS    += bios/timer/$(BIOS_TIMER_RTC)
 DEFINES     += -DBIOS_BANK_MAPPER_$(BIOS_BANK_MAPPER)
 DEFINES		+= -DBIOS_BANK_ROM_FORCE_COUNT=$(BIOS_BANK_ROM_FORCE_COUNT)
 
-ifeq ($(BIOS_BANK_MEMORY),rom)
+BIOS_BANK_MEMORY_IMPL := $(BIOS_BANK_MEMORY)
+
+ifneq ($(filter $(BIOS_BANK_MEMORY),rom ram),)
 DEFINES		+= -DBIOS_BANK_MAPPER_NO_PORT_CE_SUPPORT
 endif
-ifeq ($(BIOS_BANK_MEMORY),ram_ce)
-DEFINES		+= -DBIOS_BANK_MAPPER_SIMPLE_RAM
-endif
-
-BIOS_BANK_MEMORY_IMPL := $(BIOS_BANK_MEMORY)
-ifneq ($(filter $(BIOS_BANK_MEMORY),rom rom_ce ram_ce),)
+ifneq ($(filter $(BIOS_BANK_MEMORY),rom rom_ce),)
 BIOS_BANK_MEMORY_IMPL := simple
+DEFINES		+= -DBIOS_BANK_MAPPER_SIMPLE_ROM
+endif
+ifneq ($(filter $(BIOS_BANK_MEMORY),ram ram_ce),)
+BIOS_BANK_MEMORY_IMPL := simple
+DEFINES		+= -DBIOS_BANK_MAPPER_SIMPLE_RAM
 endif
 
 SRC_BIOS    += bios/bank/$(BIOS_BANK_MEMORY_IMPL)
