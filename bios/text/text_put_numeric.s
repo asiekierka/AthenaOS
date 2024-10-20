@@ -86,7 +86,12 @@ text_num_put_signed:
  */
     .global text_put_numeric
 text_put_numeric:
-    pusha
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+    push bp
     mov bp, sp
 
     mov ax, dx // AX = number
@@ -132,6 +137,7 @@ text_put_numeric:
     jnz .loop
 
     pop bx
+    push bx
     // end convert to string
 
     sub di, bp
@@ -197,7 +203,17 @@ text_put_numeric:
     call text_num_put_char_or_memory
     pop ax
 
+    pop ax // AL = starting X position
     add sp, 8
 
-    popa
+    sub bl, al
+    xor ax, ax
+    mov al, bl // AL = characters written
+
+    pop bp
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
     ret

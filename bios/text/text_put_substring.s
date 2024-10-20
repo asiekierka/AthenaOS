@@ -38,10 +38,11 @@
     .global text_put_substring
 text_put_substring:
     push si
+    push di
     push bx
     push cx
-    push ax
     mov si, dx
+    xor di, di
 1:
     // Load one character, two characters if >= 0x80 (for Shift-JIS)
     xor ax, ax
@@ -58,10 +59,14 @@ text_put_substring:
     call text_put_char
     pop cx
     inc bl
+    inc di
     loop 1b
 3:
-    pop ax
+    // Return number of characters displayed
+    // TODO: How is out-of-bounds string writing handled?
+    mov ax, di
     pop cx
     pop bx
+    pop di
     pop si
     ret
