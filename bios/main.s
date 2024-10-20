@@ -50,8 +50,20 @@ _start:
 	xor ax, ax
 	rep stosw
 
-	// initialize interrupt vectors
+	// clear interrupt vectors
 	mov di, ax
+	mov si, offset "irq_handlers"
+	mov cx, 0x40
+	mov ax, cs
+1:
+	mov ax, offset "error_handle_generic"
+	stosw // offset
+	mov ax, cs
+	stosw // segment
+	loop 1b
+
+	// write interrupt vectors
+	mov di, (0x08 * 4)
 	mov si, offset "irq_handlers"
 	mov cx, offset ((irq_handlers_end - irq_handlers) >> 1)
 	mov ax, cs
@@ -67,6 +79,11 @@ _start:
 	out IO_HWINT_ENABLE, al
 	sti
 
+	// initialize heap
+	mov bp, offset __heap_start
+	mov word ptr [bp], 0xFFFF // empty space
+	mov word ptr [bp + 2], offset __heap_length
+
 	// initialize LCD shade LUT
 	mov ax, 0x9BDF
 	out 0x1C, ax
@@ -79,27 +96,22 @@ _start:
 	mov ax, 0x7520
 	out 0x22, ax
 
+	// initialize text mode
+	mov al, 0x66
+	out 0x07, al
+	xor ax, ax
+	int 0x13
+	mov al, 0x01
+	out 0x00, al
+
 	// initialize sound system
 	xor ax, ax
 	int 0x15
-
-	// initialize heap
-	mov bp, offset __heap_start
-	mov word ptr [bp], 0xFFFF // empty space
-	mov word ptr [bp + 2], offset __heap_length
 
 	// jump to OS
 	jmp 0xE000:0x0000
 
 irq_handlers:
-	.word error_handle_generic			// TODO: 0x00 (CPU - Divide exception)
-	.word error_handle_generic			// TODO: 0x01 (CPU - Single step)
-	.word error_handle_generic			// TODO: 0x02 (CPU - Non-maskable interrupt)
-	.word error_handle_generic			// TODO: 0x03 (CPU - Break/INT 3)
-	.word error_handle_generic			// TODO: 0x04 (CPU - Overflow/INTO)
-	.word error_handle_generic			// TODO: 0x05 (CPU - BOUND)
-	.word _start						// 0x06 (unused)
-	.word _start 						// 0x07 (unused)
 	.word hw_irq_serial_tx_handler		// 0x08 (HW - serial TX)
 	.word hw_irq_key_handler			// 0x09 (HW - key)
 	.word hw_irq_cartridge_handler		// 0x0A (HW - cartridge)
